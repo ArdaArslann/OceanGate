@@ -59,6 +59,7 @@ namespace oceangate_r.UI.Forms
         private const int LejantH   = 32;   // lejant alanı yüksekliği
         private const int PadX      = 20;
         private const int PadY      = 16;
+        private const int MaxSecim  = 4;   // REVIEWER: Maksimum koltuk sınırı
 
         public KoltukSecimPanel()
         {
@@ -244,7 +245,16 @@ namespace oceangate_r.UI.Forms
                 return;
             }
 
-            // Boş koltuk → cinsiyet seçimi
+            // REVIEWER: Limit kontrolü – 4 koltuk seçildiyse boş koltuklar kilitlenir
+            if (_buOturumSecilen.Count >= MaxSecim)
+            {
+                // Limitteyken tıklama gelirse uyar
+                MessageBox.Show(
+                    $"En fazla {MaxSecim} koltuk seçebilirsiniz.",
+                    "Limit Aşıldı",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             using (var dialog = new CinsiyetSecimForm(koltuk.No))
             {
                 if (dialog.ShowDialog(FindForm()) != DialogResult.OK || dialog.SecilenCinsiyet == null)

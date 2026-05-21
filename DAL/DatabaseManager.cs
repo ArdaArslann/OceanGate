@@ -105,6 +105,21 @@ CREATE TABLE IF NOT EXISTS RezervasyonKoltuklar (
     KoltukNo      INTEGER NOT NULL,
     Cinsiyet      TEXT    NOT NULL,
     FOREIGN KEY (RezervasyonId) REFERENCES Rezervasyonlar(Id)
+);
+
+CREATE TABLE IF NOT EXISTS OtelOdalar (
+    Id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    OdaNo    TEXT    NOT NULL UNIQUE,
+    Kapasite INTEGER NOT NULL CHECK(Kapasite IN (1,2,3,4)),
+    AktifMi  INTEGER DEFAULT 1
+);
+
+CREATE TABLE IF NOT EXISTS RezervasyonOdalar (
+    Id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    RezervasyonId INTEGER NOT NULL,
+    OtelOdaId     INTEGER NOT NULL,
+    FOREIGN KEY (RezervasyonId) REFERENCES Rezervasyonlar(Id),
+    FOREIGN KEY (OtelOdaId)     REFERENCES OtelOdalar(Id)
 );";
                 Execute(conn, sql);
             }
@@ -163,6 +178,20 @@ CREATE TABLE IF NOT EXISTS RezervasyonKoltuklar (
                         Execute(conn,
                             $"INSERT INTO Seferler (BolgeId, KalkisSaati, KapasiteSayisi, SureDakika, FiyatKisiBasiTL, AktifMi) " +
                             $"VALUES ({s[0]}, '{s[1]}', {s[2]}, {s[3]}, {s[4]}, 1)");
+                    }
+                }
+
+                // Otel odaları – sadece bir kez oluştur
+                long odaSayisi = (long)Scalar(conn, "SELECT COUNT(*) FROM OtelOdalar");
+                if (odaSayisi == 0)
+                {
+                    // 1 kişilik: 101-105, 2 kişilik: 201-205, 3 kişilik: 301-305, 4 kişilik: 401-405
+                    for (int i = 1; i <= 5; i++)
+                    {
+                        Execute(conn, $"INSERT INTO OtelOdalar (OdaNo, Kapasite) VALUES ('10{i}', 1)");
+                        Execute(conn, $"INSERT INTO OtelOdalar (OdaNo, Kapasite) VALUES ('20{i}', 2)");
+                        Execute(conn, $"INSERT INTO OtelOdalar (OdaNo, Kapasite) VALUES ('30{i}', 3)");
+                        Execute(conn, $"INSERT INTO OtelOdalar (OdaNo, Kapasite) VALUES ('40{i}', 4)");
                     }
                 }
             }
