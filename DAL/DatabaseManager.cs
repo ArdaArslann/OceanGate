@@ -95,6 +95,16 @@ CREATE TABLE IF NOT EXISTS Talepler (
     YeniSeferTarihi  TEXT,
     FOREIGN KEY (RezervasyonId) REFERENCES Rezervasyonlar(Id),
     FOREIGN KEY (KullaniciId)   REFERENCES Kullanicilar(Id)
+);
+
+CREATE TABLE IF NOT EXISTS RezervasyonKoltuklar (
+    Id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    RezervasyonId INTEGER NOT NULL,
+    SeferId       INTEGER NOT NULL,
+    SeferTarihi   TEXT    NOT NULL,
+    KoltukNo      INTEGER NOT NULL,
+    Cinsiyet      TEXT    NOT NULL,
+    FOREIGN KEY (RezervasyonId) REFERENCES Rezervasyonlar(Id)
 );";
                 Execute(conn, sql);
             }

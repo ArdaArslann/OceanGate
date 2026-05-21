@@ -6,12 +6,12 @@ using oceangate_r.DAL;
 using oceangate_r.Entities;
 using oceangate_r.UI;
 using oceangate_r.UI.Controls;
-
+using oceangate_r.UI.Forms;
 namespace oceangate_r
 {
     /// <summary>
     /// Yeni rezervasyon oluşturma formu.
-    /// Kullanıcı: Bölge → Sefer → Tarih → Kişi sayısı → Onayla adımlarını izler.
+    /// Adım akışı: Bölge → Sefer → Tarih+Kişi → Koltuk Seçimi → Özet+Onayla
     /// </summary>
     public class YeniRezervasyonForm : Form
     {
@@ -21,32 +21,36 @@ namespace oceangate_r
         private Panel _step1Panel;  // Bölge seçimi
         private Panel _step2Panel;  // Sefer seçimi
         private Panel _step3Panel;  // Tarih + kişi
+        private Panel _step35Panel; // Koltuk seçimi (YENİ)
         private Panel _step4Panel;  // Özet + onayla
 
         private Label _lblStepIndicator;
 
         // Seçilen değerler
-        private Bolge  _seciliBolge;
-        private Sefer  _seciliSefer;
+        private Bolge    _seciliBolge;
+        private Sefer    _seciliSefer;
         private DateTime _seferTarihi = DateTime.Today.AddDays(7);
-        private int _kisiSayisi = 1;
+        private int      _kisiSayisi  = 1;
+
+        // Koltuk seçim bileşeni
+        private KoltukSecimPanel      _koltukPanel;
+        private Label                 _lblKoltukSecimBilgi;
 
         // Kontroller
-        private ListBox  _lbBolgeler;
-        private ListBox  _lbSeferler;
+        private ListBox        _lbBolgeler;
+        private ListBox        _lbSeferler;
         private DateTimePicker _dtp;
-        private NumericUpDown  _nudKisi;
 
         private const int FW = 1050, FH = 730;
 
         public YeniRezervasyonForm()
         {
-            BackColor        = AppTheme.BgDark;
-            ForeColor        = AppTheme.TextLight;
-            Font             = AppTheme.BodyFont;
-            FormBorderStyle  = FormBorderStyle.None;
-            Size             = new Size(FW, FH);
-            DoubleBuffered   = true;
+            BackColor       = AppTheme.BgDark;
+            ForeColor       = AppTheme.TextLight;
+            Font            = AppTheme.BodyFont;
+            FormBorderStyle = FormBorderStyle.None;
+            Size            = new Size(FW, FH);
+            DoubleBuffered  = true;
 
             BuildUI();
             ShowStep(1);
@@ -76,10 +80,11 @@ namespace oceangate_r
             BuildStep1();
             BuildStep2();
             BuildStep3();
+            BuildStep35();
             BuildStep4();
         }
 
-        // Adım 1: Bölge Seçimi 
+        // ── Adım 1: Bölge Seçimi ─────────────────────────────────────────────
 
         private void BuildStep1()
         {
@@ -97,15 +102,15 @@ namespace oceangate_r
 
             _lbBolgeler = new ListBox
             {
-                Location     = new Point(28, 96),
-                Size         = new Size(FW - 56, 420),
-                BackColor    = AppTheme.BgMedium,
-                ForeColor    = AppTheme.TextLight,
-                Font         = AppTheme.BodyFont,
-                BorderStyle  = BorderStyle.None,
-                DrawMode     = DrawMode.OwnerDrawFixed,
-                ItemHeight   = 64,
-                SelectionMode= SelectionMode.One,
+                Location      = new Point(28, 96),
+                Size          = new Size(FW - 56, 420),
+                BackColor     = AppTheme.BgMedium,
+                ForeColor     = AppTheme.TextLight,
+                Font          = AppTheme.BodyFont,
+                BorderStyle   = BorderStyle.None,
+                DrawMode      = DrawMode.OwnerDrawFixed,
+                ItemHeight    = 64,
+                SelectionMode = SelectionMode.One,
             };
             _lbBolgeler.DrawItem += BolgeListBox_DrawItem;
 
@@ -146,16 +151,13 @@ namespace oceangate_r
                     e.Graphics.DrawLine(pen, e.Bounds.Left, e.Bounds.Top, e.Bounds.Left, e.Bounds.Bottom);
             }
 
-            // İkon + Ad
-            e.Graphics.DrawString("", new Font("Segoe UI", 18f, FontStyle.Regular, GraphicsUnit.Point),
-                new SolidBrush(AppTheme.Accent), new Point(e.Bounds.Left + 16, e.Bounds.Top + 12));
             e.Graphics.DrawString(bolge.Ad, AppTheme.BodyBold,
-                new SolidBrush(AppTheme.TextLight), new Point(e.Bounds.Left + 56, e.Bounds.Top + 8));
+                new SolidBrush(AppTheme.TextLight), new Point(e.Bounds.Left + 20, e.Bounds.Top + 8));
             e.Graphics.DrawString($"Derinlik: {bolge.Derinlik} m  –  {bolge.Aciklama}", AppTheme.SmallFont,
-                new SolidBrush(AppTheme.TextMuted), new Point(e.Bounds.Left + 56, e.Bounds.Top + 34));
+                new SolidBrush(AppTheme.TextMuted), new Point(e.Bounds.Left + 20, e.Bounds.Top + 34));
         }
 
-        // Adım 2: Sefer Seçimi 
+        // ── Adım 2: Sefer Seçimi ─────────────────────────────────────────────
 
         private void BuildStep2()
         {
@@ -235,7 +237,7 @@ namespace oceangate_r
                 new SolidBrush(AppTheme.Success), new RectangleF(e.Bounds.Right - 220, e.Bounds.Top + 16, 200, 40));
         }
 
-        // Adım 3: Tarih + Kişi Sayısı 
+        // ── Adım 3: Tarih Seçimi ─────────────────────────────────────────────
 
         private void BuildStep3()
         {
@@ -247,63 +249,116 @@ namespace oceangate_r
                 Visible   = false,
             };
 
-            var lbl = UIHelper.MakeLabel("Tarih ve Kişi Sayısı",
+            var lbl = UIHelper.MakeLabel("Tarih Seçimi",
                 AppTheme.SubFont, AppTheme.TextLight, 28, 16, 400, 36);
 
-            // Tarih seçici
             var lblTarih = UIHelper.MakeLabel("Sefer Tarihi", AppTheme.BodyBold,
                 AppTheme.TextMuted, 28, 74, 200, 24);
 
             _dtp = new DateTimePicker
             {
-                Location       = new Point(28, 104),
-                Size           = new Size(340, 36),
-                MinDate        = DateTime.Today.AddDays(1),
-                Value          = _seferTarihi,
-                Format         = DateTimePickerFormat.Long,
+                Location                = new Point(28, 104),
+                Size                    = new Size(340, 36),
+                MinDate                 = DateTime.Today.AddDays(1),
+                Value                   = _seferTarihi,
+                Format                  = DateTimePickerFormat.Long,
                 CalendarMonthBackground = AppTheme.BgCard,
-                ForeColor      = AppTheme.TextLight,
-                Font           = AppTheme.BodyFont,
-            };
-
-            // Kişi sayısı
-            var lblKisi = UIHelper.MakeLabel("Kişi Sayısı", AppTheme.BodyBold,
-                AppTheme.TextMuted, 28, 162, 200, 24);
-
-            _nudKisi = new NumericUpDown
-            {
-                Location   = new Point(28, 192),
-                Size       = new Size(120, 36),
-                Minimum    = 1,
-                Maximum    = 20,
-                Value      = 1,
-                Font       = AppTheme.SubFont,
-                BackColor  = AppTheme.BgCard,
-                ForeColor  = AppTheme.TextLight,
-                BorderStyle= BorderStyle.FixedSingle,
+                ForeColor               = AppTheme.TextLight,
+                Font                    = AppTheme.BodyFont,
             };
 
             var btnGeri = UIHelper.MakeButton("← Geri", 28, FH - 148, 164, 48);
             btnGeri.SetMuted();
             btnGeri.Click += (s, e) => ShowStep(2);
 
-            var btnIleri = UIHelper.MakeButton("Özete Git →", FW - 200, FH - 148, 164, 48);
+            var btnIleri = UIHelper.MakeButton("Koltuk Seç →", FW - 200, FH - 148, 164, 48);
             btnIleri.Click += (s, e) =>
             {
                 _seferTarihi = _dtp.Value.Date;
-                _kisiSayisi  = (int)_nudKisi.Value;
-                UpdateStep4Summary();
-                ShowStep(4);
+
+                // Koltuk panelini seferin kapasitesine göre başlat
+                // Ve veritabanından o sefer+tarih için dolu koltukları yükle
+                int kapasite = _seciliSefer?.KapasiteSayisi ?? 20;
+                var doluAtamalar = oceangate_r.DAL.KoltukDAL.DoluKoltuklariGetir(_seciliSefer.Id, _dtp.Value.Date);
+                var mevcutDurumlar = doluAtamalar.ConvertAll(a => new Koltuk
+                {
+                    No    = a.KoltukNo,
+                    Durum = a.Cinsiyet == "Kadin" ? KoltukDurum.DoluKadin : KoltukDurum.DoluErkek,
+                });
+                _koltukPanel.Baslat(kapasite, mevcutDurumlar);
+                _lblKoltukSecimBilgi.Text = "Koltuk seçiniz. Seçilen: 0";
+
+                ShowStep(35);
             };
 
             _step3Panel.Controls.AddRange(new Control[]
             {
-                lbl, lblTarih, _dtp, lblKisi, _nudKisi, btnGeri, btnIleri,
+                lbl, lblTarih, _dtp, btnGeri, btnIleri,
             });
             Controls.Add(_step3Panel);
         }
 
-        // Adım 4: Özet + Onayla 
+        // ── Adım 3.5: Koltuk Seçimi (YENİ) ──────────────────────────────────
+
+        private void BuildStep35()
+        {
+            _step35Panel = new Panel
+            {
+                Location  = new Point(0, 88),
+                Size      = new Size(FW, FH - 88),
+                BackColor = Color.Transparent,
+                Visible   = false,
+            };
+
+            var lbl = UIHelper.MakeLabel("Koltuk Seçimi",
+                AppTheme.SubFont, AppTheme.TextLight, 28, 16, 400, 36);
+
+            _lblKoltukSecimBilgi = UIHelper.MakeLabel("", AppTheme.BodyFont,
+                AppTheme.TextMuted, 0, 16, FW, 36);
+            _lblKoltukSecimBilgi.TextAlign = ContentAlignment.MiddleRight;
+
+            // Koltuk seçim paneli
+            _koltukPanel = new KoltukSecimPanel
+            {
+                Location = new Point(28, 62),
+                Size     = new Size(FW - 56, FH - 88 - 62 - 80),
+            };
+            _koltukPanel.SecimDegisti += seciliKoltuklar =>
+            {
+                _lblKoltukSecimBilgi.Text = $"Seçilen koltuk sayısı: {seciliKoltuklar.Count}";
+            };
+
+            var btnGeri = UIHelper.MakeButton("← Geri", 28, FH - 148, 164, 48);
+            btnGeri.SetMuted();
+            btnGeri.Click += (s, e) => ShowStep(3);
+
+            var btnIleri = UIHelper.MakeButton("Özete Git →", FW - 200, FH - 148, 164, 48);
+            btnIleri.Click += (s, e) =>
+            {
+                // En az 1 koltuk seçilmeli
+                int secilen = _koltukPanel.SeciliKoltuklar.Count;
+                if (secilen == 0)
+                {
+                    MessageBox.Show(
+                        "Lütfen en az 1 koltuk seçiniz.",
+                        "Koltuk Seçimi Eksik",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+                // Kişi sayısını seçilen koltuk sayısından otomatik hesapla
+                _kisiSayisi = secilen;
+                UpdateStep4Summary();
+                ShowStep(4);
+            };
+
+            _step35Panel.Controls.AddRange(new Control[]
+            {
+                lbl, _lblKoltukSecimBilgi, _koltukPanel, btnGeri, btnIleri,
+            });
+            Controls.Add(_step35Panel);
+        }
+
+        // ── Adım 4: Özet + Onayla ────────────────────────────────────────────
 
         private Panel   _summaryCard;
         private Label[] _summaryLabels = new Label[10];
@@ -321,10 +376,10 @@ namespace oceangate_r
             var lbl = UIHelper.MakeLabel("Rezervasyon Özeti",
                 AppTheme.SubFont, AppTheme.TextLight, 28, 16, 400, 36);
 
-            _summaryCard = UIHelper.MakeCard(28, 66, 640, 380, AppTheme.BgCard);
+            _summaryCard = UIHelper.MakeCard(28, 66, 640, 420, AppTheme.BgCard);
 
             string[] keys = { "Bölge:", "Sefer:", "Kalkış Saati:", "Süre:", "Sefer Tarihi:",
-                               "Kişi Sayısı:", "Birim Fiyat:", "Toplam Tutar:" };
+                               "Kişi Sayısı:", "Seçilen Koltuklar:", "Birim Fiyat:", "Toplam Tutar:" };
             int ky = 20;
             for (int i = 0; i < keys.Length; i++)
             {
@@ -336,13 +391,13 @@ namespace oceangate_r
                 _summaryCard.Controls.Add(_summaryLabels[i]);
                 ky += 40;
             }
-            // Son satır: Toplam büyük yazı
-            _summaryLabels[7].Font      = AppTheme.TitleFont;
-            _summaryLabels[7].ForeColor = AppTheme.Accent;
+            // Toplam büyük yazı
+            _summaryLabels[8].Font      = AppTheme.TitleFont;
+            _summaryLabels[8].ForeColor = AppTheme.Accent;
 
             var btnGeri = UIHelper.MakeButton("← Geri", 28, FH - 148, 164, 48);
             btnGeri.SetMuted();
-            btnGeri.Click += (s, e) => ShowStep(3);
+            btnGeri.Click += (s, e) => ShowStep(35);
 
             var btnOnayla = UIHelper.MakeButton("Rezervasyonu Onayla", FW - 320, FH - 148, 284, 48);
             btnOnayla.SetSuccess();
@@ -358,6 +413,12 @@ namespace oceangate_r
         private void UpdateStep4Summary()
         {
             if (_seciliBolge == null || _seciliSefer == null) return;
+
+            var seciliKoltuklar = _koltukPanel.SeciliKoltuklar;
+            string koltukNoStr  = seciliKoltuklar.Count > 0
+                ? string.Join(", ", seciliKoltuklar.ConvertAll(k => k.No.ToString()))
+                : "—";
+
             double toplam = _seciliSefer.FiyatKisiBasiTL * _kisiSayisi;
 
             _summaryLabels[0].Text = _seciliBolge.Ad;
@@ -367,13 +428,14 @@ namespace oceangate_r
             _summaryLabels[4].Text = _seferTarihi.ToString("dd MMMM yyyy dddd",
                 new System.Globalization.CultureInfo("tr-TR"));
             _summaryLabels[5].Text = $"{_kisiSayisi} kişi";
-            _summaryLabels[6].Text = $"{_seciliSefer.FiyatKisiBasiTL:N0} TL / kişi";
-            _summaryLabels[7].Text = $"{toplam:N0} TL";
+            _summaryLabels[6].Text = koltukNoStr;
+            _summaryLabels[7].Text = $"{_seciliSefer.FiyatKisiBasiTL:N0} TL / kişi";
+            _summaryLabels[8].Text = $"{toplam:N0} TL";
         }
 
         private void BtnOnayla_Click(object sender, EventArgs e)
         {
-            double toplam = _seciliSefer.FiyatKisiBasiTL * _kisiSayisi;
+            double toplam   = _seciliSefer.FiyatKisiBasiTL * _kisiSayisi;
             string dekontNo = DatabaseManager.YeniDekontNo();
 
             var rez = new Rezervasyon
@@ -392,23 +454,33 @@ namespace oceangate_r
 
             RezervasyonDAL.Ekle(rez);
 
-            // Dekont göster (uygulama KAPANMAZ)
+            // Yeni eklenen rezervasyonun Id'sini al ve koltukları kaydet
+            var yeniRez = RezervasyonDAL.KullanicininRezervasyonlari(SessionManager.AktifKullanici.Id);
+            if (yeniRez.Count > 0)
+            {
+                int rezId = yeniRez[0].Id;  // En son eklenen (DESC sırali)
+                oceangate_r.DAL.KoltukDAL.KoltuklariKaydet(rezId, _seciliSefer.Id, _seferTarihi, _koltukPanel.SeciliAtamalar);
+            }
+
             using (var dekont = new DekontForm(rez))
                 dekont.ShowDialog(this);
 
-            // Tamamlandı eventi
             RezervasyonTamamlandi?.Invoke();
         }
 
-        // Adım geçişi 
+        // ── Adım Geçişi ───────────────────────────────────────────────────────
 
         private void ShowStep(int step)
         {
-            _step1Panel.Visible = step == 1;
-            _step2Panel.Visible = step == 2;
-            _step3Panel.Visible = step == 3;
-            _step4Panel.Visible = step == 4;
-            _lblStepIndicator.Text = $"Adım {step} / 4   ";
+            _step1Panel.Visible  = step == 1;
+            _step2Panel.Visible  = step == 2;
+            _step3Panel.Visible  = step == 3;
+            _step35Panel.Visible = step == 35;
+            _step4Panel.Visible  = step == 4;
+
+            // Gösterim adım numarasını 1-5 olarak normalleştir
+            int gorunenAdim = step <= 3 ? step : step == 35 ? 4 : 5;
+            _lblStepIndicator.Text = $"Adım {gorunenAdim} / 5   ";
         }
     }
 }
