@@ -118,11 +118,36 @@ CREATE TABLE IF NOT EXISTS RezervasyonOdalar (
     Id            INTEGER PRIMARY KEY AUTOINCREMENT,
     RezervasyonId INTEGER NOT NULL,
     OtelOdaId     INTEGER NOT NULL,
+    SeferId       INTEGER NOT NULL DEFAULT 0,
+    SeferTarihi   TEXT    NOT NULL DEFAULT '',
     FOREIGN KEY (RezervasyonId) REFERENCES Rezervasyonlar(Id),
     FOREIGN KEY (OtelOdaId)     REFERENCES OtelOdalar(Id)
 );";
                 Execute(conn, sql);
+
+                // Migration: mevcut DB'de SeferId / SeferTarihi kolonu yoksa ekle
+                MigrateRezervasyonOdalar(conn);
             }
+        }
+
+        private static void MigrateRezervasyonOdalar(SQLiteConnection conn)
+        {
+            // PRAGMA table_info ile kolon varlığını kontrol et
+            bool hasSeferId     = false;
+            bool hasSeferTarihi = false;
+            using (var cmd = new SQLiteCommand("PRAGMA table_info(RezervasyonOdalar)", conn))
+            using (var r = cmd.ExecuteReader())
+                while (r.Read())
+                {
+                    string name = r["name"].ToString();
+                    if (name == "SeferId")     hasSeferId     = true;
+                    if (name == "SeferTarihi") hasSeferTarihi = true;
+                }
+
+            if (!hasSeferId)
+                Execute(conn, "ALTER TABLE RezervasyonOdalar ADD COLUMN SeferId INTEGER NOT NULL DEFAULT 0");
+            if (!hasSeferTarihi)
+                Execute(conn, "ALTER TABLE RezervasyonOdalar ADD COLUMN SeferTarihi TEXT NOT NULL DEFAULT ''");
         }
 
         private static void SeedData()

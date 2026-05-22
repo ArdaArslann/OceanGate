@@ -1,4 +1,4 @@
-namespace oceangate_r.DAL
+﻿namespace oceangate_r.DAL
 {
     /// <summary>
     /// Tek bir koltuk atamasını temsil eder.

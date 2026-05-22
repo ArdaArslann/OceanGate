@@ -18,7 +18,7 @@ namespace oceangate_r.UI.Forms
     ///
     /// Koltuklar soldan sağa sütun sütun ilerler.
     /// </summary>
-    public class KoltukSecimPanel : Panel
+    public partial class KoltukSecimPanel : System.Windows.Forms.UserControl
     {
         // ── Renk Paleti ──────────────────────────────────────────────────────
         private static readonly Color RenkBos       = Color.FromArgb(51,  65,  85);
@@ -37,13 +37,12 @@ namespace oceangate_r.UI.Forms
 
         // ── Seçili koltukları dışarıya ver (UI için) ─────────────────────────
         public List<Koltuk> SeciliKoltuklar =>
-            _koltuklar.Where(k => k.Durum == KoltukDurum.DoluKadin ||
-                                  k.Durum == KoltukDurum.DoluErkek).ToList();
+            _koltuklar.Where(k => _buOturumSecilen.Contains(k.No)).ToList();
 
         // ── KoltukAtama listesi (kayıt için) ──────────────────────────────────
         public List<KoltukAtama> SeciliAtamalar =>
             _koltuklar
-                .Where(k => k.Durum == KoltukDurum.DoluKadin || k.Durum == KoltukDurum.DoluErkek)
+                .Where(k => _buOturumSecilen.Contains(k.No))
                 .Select(k => new KoltukAtama
                 {
                     KoltukNo = k.No,

@@ -1,4 +1,4 @@
-namespace oceangate_r.Entities
+﻿namespace oceangate_r.Entities
 {
     // ── ARCHITECT: Koltuk durum enum'ı ─────────────────────────────────────
     // Her koltuk dört farklı durumda olabilir.

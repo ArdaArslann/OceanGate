@@ -9,159 +9,260 @@ using oceangate_r.Entities;
 namespace oceangate_r.UI.Forms
 {
     /// <summary>
-    /// CODER PHASE – Otel Odası Seçim Paneli.
+    /// Otel Odası Seçim Paneli — Dinamik Kısıtlama Mantığı
     ///
-    /// ARCHITECT KARARLARI:
-    ///   - kisiSayisi dışarıdan gelir; yalnızca kapasitesi == kisiSayisi olan odalar aktif.
-    ///   - Odalar FlowLayoutPanel ile dinamik oluşturulur (gruplar halinde: 1K, 2K, 3K, 4K).
-    ///   - Dolu odalar kilitli (disabled + gri), uyumsuz kapasite soluk gösterilir.
-    ///   - Seçim değiştiğinde SecimDegisti event'i tetiklenir.
+    /// KURAL:
+    ///   Her oda seçiminden sonra "kalan kişi sayısı" güncellenir.
+    ///   Bir sonraki seçilebilir oda kapasitesi: 1 ≤ kapasite ≤ kalan kişi sayısı
     ///
-    /// REVIEWER KONTROLLERI:
-    ///   ✓ Harici kütüphane yok.
-    ///   ✓ Kapasite uyumsuzluğu: Enabled=false + soluk renk.
-    ///   ✓ Dolu odalar tamamen kilitli (farklı renk ve Enabled=false).
-    ///   ✓ Tekli seçim: Önceki seçimi temizler.
-    ///   ✓ "Oda İstemiyorum" seçeneği mevcut.
+    /// ÖRNEK (3 kişi):
+    ///   Başlangıç → kalan=3 → 1K, 2K, 3K seçilebilir; 4K kilitli (taşar)
+    ///   2K oda seçildi → kalan=1 → sadece 1K seçilebilir; 2K/3K/4K kilitli
+    ///   1K oda seçildi → kalan=0 → tüm odalar kilitli (tamamlandı)
+    ///
+    /// REVIEWER:
+    ///   ✓ Taşma imkânsız — toplam kapasite asla kişi sayısını aşamaz
+    ///   ✓ Fazla büyük oda seçimi engellendi (3 kişiye 4K oda verilemez)
+    ///   ✓ Seçim iptalinde kapasite güncellenerek daha büyük odalar tekrar açılır
+    ///   ✓ Dolu odalar (DB'de rezerve) her zaman kilitli
     /// </summary>
-    public class OtelOdaSecimPanel : Panel
+    public partial class OtelOdaSecimPanel : System.Windows.Forms.UserControl
     {
-        // ── Renkler ──────────────────────────────────────────────────────────
-        private static readonly Color RenkBos          = Color.FromArgb(51,  65,  85);
-        private static readonly Color RenkBosAktif     = Color.FromArgb(30,  100, 160); // hover rengi
-        private static readonly Color RenkDolu         = Color.FromArgb(80,  80,  80);
-        private static readonly Color RenkSecili       = Color.FromArgb(16,  185, 129);
-        private static readonly Color RenkUyumsuz      = Color.FromArgb(35,  45,  60);
-        private static readonly Color RenkUyumsuzText  = Color.FromArgb(70,  80,  95);
+        // ── Renkler ───────────────────────────────────────────────────────────
+        private static readonly Color RenkBos        = Color.FromArgb(51,  65,  85);
+        private static readonly Color RenkBosAktif   = Color.FromArgb(30,  100, 160);
+        private static readonly Color RenkDolu       = Color.FromArgb(80,  80,  80);
+        private static readonly Color RenkSecili     = Color.FromArgb(16,  185, 129);
+        private static readonly Color RenkKilitli    = Color.FromArgb(25,  32,  44);  // seçilemez (taşar)
+        private static readonly Color RenkKilitliTxt = Color.FromArgb(50,  58,  70);
 
         // ── State ─────────────────────────────────────────────────────────────
-        private List<OtelOda> _odalar = new List<OtelOda>();
-        private OtelOda       _seciliOda = null;   // null = oda istemiyorum
-        private int           _kisiSayisi = 1;
-        private bool          _odaIstemiyor = false;
+        private List<OtelOda> _odalar       = new List<OtelOda>();
+        private List<OtelOda> _seciliOdalar = new List<OtelOda>();
+        private int           _kisiSayisi   = 1;
+        private int           _seferId      = 0;
+        private DateTime      _seferTarihi  = DateTime.Today;
+
+        // Tüm oda butonlarını tutuyoruz → seçim sonrası Enabled'ı güncellemek için
+        private readonly List<(Button Btn, OtelOda Oda)> _tumBtnler = new List<(Button, OtelOda)>();
+
+        // ── Bilgi etiketi ─────────────────────────────────────────────────────
+        private Label _lblDurum;
 
         // ── Event ─────────────────────────────────────────────────────────────
-        public event Action<OtelOda> SecimDegisti;   // null = oda istemiyorum
-
-        public OtelOda    SeciliOda       => _seciliOda;
-        public bool       OdaIstemiyorum  => _odaIstemiyor;
+        public event Action<List<OtelOda>> SecimDegisti;
+        public List<OtelOda> SeciliOdalar => _seciliOdalar;
 
         public OtelOdaSecimPanel()
         {
-            BackColor  = AppTheme.BgDark;
-            AutoScroll = true;
-            typeof(Panel)
-                .GetProperty("DoubleBuffered",
-                    System.Reflection.BindingFlags.Instance |
-                    System.Reflection.BindingFlags.NonPublic)
-                ?.SetValue(this, true, null);
+            InitializeComponent();
         }
 
-        // ── Başlat ───────────────────────────────────────────────────────────
-        public void Baslat(int kisiSayisi)
+        // ── Başlat ────────────────────────────────────────────────────────────
+        public void Baslat(int kisiSayisi, int seferId, DateTime seferTarihi)
         {
-            _kisiSayisi   = kisiSayisi;
-            _seciliOda    = null;
-            _odaIstemiyor = false;
+            _kisiSayisi  = kisiSayisi;
+            _seferId     = seferId;
+            _seferTarihi = seferTarihi;
+            _seciliOdalar.Clear();
+            _tumBtnler.Clear();
 
             Controls.Clear();
-            _odalar = OtelOdaDAL.TumOdalariGetir();
+            _odalar = OtelOdaDAL.TumOdalariGetir(_seferId, _seferTarihi);
 
             BuildUI();
+            GuncelleKisitlamalar();  // ilk durumda hangi odalar seçilebilir?
         }
 
         // ── UI İnşası ─────────────────────────────────────────────────────────
         private void BuildUI()
         {
-            int y = 16;
+            int y = 8;
 
-            // Başlık
-            var lblBaslik = new Label
+            // Durum etiketi — kalan kişi bilgisi
+            _lblDurum = new Label
             {
-                Text      = $"Otel Odası Seçimi  ({_kisiSayisi} kişilik odalar aktif)",
+                Text      = "",
                 Location  = new Point(20, y),
-                Size      = new Size(Width - 40, 28),
-                ForeColor = AppTheme.TextLight,
-                Font      = AppTheme.SubFont,
+                Size      = new Size(Width - 40, 24),
+                ForeColor = AppTheme.Accent,
+                Font      = AppTheme.BodyBold,
                 BackColor = Color.Transparent,
             };
-            Controls.Add(lblBaslik);
-            y += 36;
+            Controls.Add(_lblDurum);
+            y += 30;
 
             // Lejant
             BuildLejant(y);
-            y += 32;
+            y += 30;
 
-            // "Oda İstemiyorum" butonu
-            var btnAtla = new Button
+            // Kapasiteye göre grupla: 1K → 2K → 3K → 4K
+            foreach (int kap in new[] { 1, 2, 3, 4 })
             {
-                Text      = "Oda rezervasyonu istemiyorum",
-                Location  = new Point(20, y),
-                Size      = new Size(260, 36),
-                BackColor = AppTheme.BgCard,
-                ForeColor = AppTheme.TextMuted,
-                FlatStyle = FlatStyle.Flat,
-                Font      = AppTheme.BodyFont,
-                Cursor    = Cursors.Hand,
-                Tag       = "atla",
-            };
-            btnAtla.FlatAppearance.BorderSize = 0;
-            btnAtla.Click += (s, e) =>
-            {
-                _seciliOda    = null;
-                _odaIstemiyor = true;
-                SecimDegisti?.Invoke(null);
-                // Seçili butonu vurgula
-                foreach (Control c in Controls)
-                    if (c is Button b && b.Tag?.ToString() == "atla")
-                        b.BackColor = AppTheme.BgCardHov;
-                    else if (c is Button b2 && b2.Tag is OtelOda)
-                        b2.BackColor = RenkBos;
-            };
-            Controls.Add(btnAtla);
-            y += 52;
+                var grup = _odalar.Where(o => o.Kapasite == kap).ToList();
+                if (grup.Count == 0) continue;
 
-            // Kapasiteye göre grupla ve göster
-            var gruplar = new[] { 1, 2, 3, 4 };
-            foreach (int kap in gruplar)
-            {
-                var odaGrubu = _odalar.Where(o => o.Kapasite == kap).ToList();
-                if (odaGrubu.Count == 0) continue;
-
-                bool gruplaAktif = (kap == _kisiSayisi);
-
-                // Grup başlığı
                 var lblGrup = new Label
                 {
                     Text      = $"{kap} Kişilik Odalar",
                     Location  = new Point(20, y),
-                    Size      = new Size(200, 22),
-                    ForeColor = gruplaAktif ? AppTheme.Accent : AppTheme.TextDim,
+                    Size      = new Size(220, 22),
+                    ForeColor = AppTheme.TextMuted,
                     Font      = AppTheme.BodyBold,
                     BackColor = Color.Transparent,
+                    Tag       = $"grup{kap}",  // Enabled güncellemesi için Tag
                 };
                 Controls.Add(lblGrup);
-                y += 28;
+                y += 26;
 
-                // Odaları FlowLayoutPanel içinde göster
                 var flow = new FlowLayoutPanel
                 {
-                    Location        = new Point(20, y),
-                    Size            = new Size(Width - 44, 76),
-                    BackColor       = Color.Transparent,
-                    FlowDirection   = FlowDirection.LeftToRight,
-                    WrapContents    = true,
-                    AutoSize        = false,
+                    Location      = new Point(20, y),
+                    Size          = new Size(Width - 44, 72),
+                    BackColor     = Color.Transparent,
+                    FlowDirection = FlowDirection.LeftToRight,
+                    WrapContents  = true,
+                    AutoSize      = false,
                 };
 
-                foreach (var oda in odaGrubu)
+                foreach (var oda in grup)
                 {
-                    bool aktif = gruplaAktif && oda.Durum == OdaDurum.Bos;
-                    var btn   = BuildOdaBtn(oda, aktif);
+                    var btn = new Button
+                    {
+                        Text      = $"Oda {oda.OdaNo}\n{oda.Kapasite} Kişilik",
+                        Size      = new Size(90, 60),
+                        FlatStyle = FlatStyle.Flat,
+                        Font      = AppTheme.SmallFont,
+                        Cursor    = Cursors.Hand,
+                        Tag       = oda,
+                        Margin    = new Padding(0, 0, 8, 8),
+                    };
+                    btn.FlatAppearance.BorderSize = 0;
+
+                    if (oda.Durum == OdaDurum.Dolu)
+                    {
+                        // DB'de rezerve → kalıcı kilitli
+                        btn.BackColor = RenkDolu;
+                        btn.ForeColor = AppTheme.TextDim;
+                        btn.Enabled   = false;
+                        btn.Cursor    = Cursors.Default;
+                    }
+                    else
+                    {
+                        // Başlangıçta tüm boş odalar mevcut — GuncelleKisitlamalar() ayarlayacak
+                        btn.BackColor = RenkBos;
+                        btn.ForeColor = AppTheme.TextLight;
+                        btn.FlatAppearance.MouseOverBackColor = RenkBosAktif;
+
+                        // Capture için local kopy
+                        var localOda = oda;
+                        var localBtn = btn;
+
+                        btn.Click += (s, e) =>
+                        {
+                            if (_seciliOdalar.Any(o => o.Id == localOda.Id))
+                            {
+                                // Seçimi kaldır
+                                _seciliOdalar.RemoveAll(o => o.Id == localOda.Id);
+                                localBtn.BackColor = RenkBos;
+                                localBtn.FlatAppearance.MouseOverBackColor = RenkBosAktif;
+                            }
+                            else
+                            {
+                                // Seç
+                                _seciliOdalar.Add(localOda);
+                                localBtn.BackColor = RenkSecili;
+                                localBtn.FlatAppearance.MouseOverBackColor = RenkSecili;
+                            }
+
+                            GuncelleKisitlamalar();
+                            SecimDegisti?.Invoke(_seciliOdalar);
+                        };
+
+                        _tumBtnler.Add((btn, oda));
+                    }
+
                     flow.Controls.Add(btn);
                 }
+
                 Controls.Add(flow);
-                y += 86;
+                y += 82;
+            }
+        }
+
+        /// <summary>
+        /// Seçim değiştiğinde hangi odaların seçilebileceğini günceller.
+        ///
+        /// KURAL: Bir oda seçilebilir ↔
+        ///   (1) DB'de dolu değil          (Durum == Bos)
+        ///   (2) Zaten seçili değil        (seçiliyse kilitlenmez, iptal edebilsin)
+        ///   (3) Kapasitesi ≤ kalan kişi   (taşma önleme)
+        ///   (4) Kalan kişi > 0            (tamamlandıysa yeni seçim yok)
+        /// </summary>
+        private void GuncelleKisitlamalar()
+        {
+            int toplamSecili = _seciliOdalar.Sum(o => o.Kapasite);
+            int kalan        = _kisiSayisi - toplamSecili;
+
+            // Durum etiketi güncelle
+            if (kalan == 0)
+                _lblDurum.Text      = $"✓  Tüm yolcular için oda seçildi! ({_kisiSayisi}/{_kisiSayisi} kişi)";
+            else if (kalan > 0)
+                _lblDurum.Text      = $"Seçildi: {toplamSecili}/{_kisiSayisi} kişilik  —  Kalan: {kalan} kişi için oda seçiniz";
+            _lblDurum.ForeColor = kalan == 0 ? AppTheme.Success : AppTheme.Accent;
+
+            // Her butonun Enabled durumunu güncelle
+            foreach (var (btn, oda) in _tumBtnler)
+            {
+                bool secilidirZaten = _seciliOdalar.Any(o => o.Id == oda.Id);
+
+                if (secilidirZaten)
+                {
+                    // Seçili odalar kendi seçimini iptal edebilmeli → her zaman aktif
+                    btn.Enabled   = true;
+                    btn.BackColor = RenkSecili;
+                    btn.FlatAppearance.MouseOverBackColor = RenkSecili;
+                    btn.ForeColor = AppTheme.TextLight;
+                }
+                else if (kalan == 0)
+                {
+                    // Tamamlandı — yeni seçim yasak
+                    btn.Enabled   = false;
+                    btn.BackColor = RenkKilitli;
+                    btn.ForeColor = RenkKilitliTxt;
+                    btn.Cursor    = Cursors.Default;
+                }
+                else if (oda.Kapasite > kalan)
+                {
+                    // Bu oda kapasitesi kalan kişiyi aşıyor — taşma olur, yasak
+                    btn.Enabled   = false;
+                    btn.BackColor = RenkKilitli;
+                    btn.ForeColor = RenkKilitliTxt;
+                    btn.Cursor    = Cursors.Default;
+                    btn.FlatAppearance.MouseOverBackColor = RenkKilitli;
+                }
+                else
+                {
+                    // Seçilebilir
+                    btn.Enabled   = true;
+                    btn.BackColor = RenkBos;
+                    btn.ForeColor = AppTheme.TextLight;
+                    btn.Cursor    = Cursors.Hand;
+                    btn.FlatAppearance.MouseOverBackColor = RenkBosAktif;
+                }
+            }
+
+            // Grup başlıklarını güncelle: kalan kişi için seçilebilir grup = aktif renk
+            foreach (Control c in Controls)
+            {
+                if (c is Label lbl && lbl.Tag is string tag && tag.StartsWith("grup"))
+                {
+                    if (int.TryParse(tag.Replace("grup", ""), out int grupKap))
+                    {
+                        bool secilecek = kalan > 0 && grupKap <= kalan;
+                        lbl.ForeColor = secilecek ? AppTheme.Accent : AppTheme.TextDim;
+                    }
+                }
             }
         }
 
@@ -169,102 +270,33 @@ namespace oceangate_r.UI.Forms
         {
             var durumlar = new (Color Renk, string Ad)[]
             {
-                (RenkBos,       "Seçilebilir"),
-                (RenkDolu,      "Dolu"),
-                (RenkUyumsuz,   "Uyumsuz Kapasite"),
-                (RenkSecili,    "Seçildi"),
+                (RenkBos,     "Seçilebilir"),
+                (RenkDolu,    "Rezerve (Dolu)"),
+                (RenkSecili,  "Seçildi"),
+                (RenkKilitli, "Sığmaz / Tamamlandı"),
             };
 
             int ix = 20;
             foreach (var (renk, ad) in durumlar)
             {
-                var kutu = new Panel { Location = new Point(ix, y + 2), Size = new Size(16, 16), BackColor = renk };
-                var lbl  = new Label
+                var kutu = new Panel
                 {
-                    Text = ad, Location = new Point(ix + 20, y), Size = new Size(108, 22),
-                    ForeColor = AppTheme.TextMuted, Font = AppTheme.SmallFont, BackColor = Color.Transparent,
+                    Location  = new Point(ix, y + 3),
+                    Size      = new Size(14, 14),
+                    BackColor = renk,
+                };
+                var lbl = new Label
+                {
+                    Text      = ad,
+                    Location  = new Point(ix + 18, y),
+                    Size      = new Size(120, 20),
+                    ForeColor = AppTheme.TextMuted,
+                    Font      = AppTheme.SmallFont,
+                    BackColor = Color.Transparent,
                 };
                 Controls.Add(kutu);
                 Controls.Add(lbl);
-                ix += 130;
-            }
-        }
-
-        private Button BuildOdaBtn(OtelOda oda, bool aktif)
-        {
-            Color bgRenk;
-            Color fgRenk = AppTheme.TextLight;
-
-            if (!aktif && oda.Durum == OdaDurum.Dolu)
-            {
-                bgRenk = RenkDolu;
-                fgRenk = AppTheme.TextDim;
-            }
-            else if (!aktif)
-            {
-                bgRenk = RenkUyumsuz;
-                fgRenk = RenkUyumsuzText;
-            }
-            else
-            {
-                bgRenk = RenkBos;
-            }
-
-            var btn = new Button
-            {
-                Text      = $"Oda {oda.OdaNo}\n{oda.Kapasite} Kişilik",
-                Size      = new Size(90, 60),
-                BackColor = bgRenk,
-                ForeColor = fgRenk,
-                FlatStyle = FlatStyle.Flat,
-                Font      = AppTheme.SmallFont,
-                Enabled   = aktif,
-                Cursor    = aktif ? Cursors.Hand : Cursors.Default,
-                Tag       = oda,
-                Margin    = new Padding(0, 0, 8, 8),
-            };
-            btn.FlatAppearance.BorderSize         = 0;
-            btn.FlatAppearance.MouseOverBackColor = aktif ? RenkBosAktif : bgRenk;
-
-            if (aktif)
-            {
-                btn.Click += (s, e) =>
-                {
-                    // Önceki seçimi temizle
-                    foreach (Control c in Parent?.Controls ?? new Control.ControlCollection(null))
-                        if (c is FlowLayoutPanel fp)
-                            foreach (Control fc in fp.Controls)
-                                if (fc is Button fb && fb.Tag is OtelOda)
-                                    fb.BackColor = RenkBos;
-
-                    // Kendi panelindeki tüm butonları temizle
-                    TumOdaBtnRenkSifirla();
-
-                    _seciliOda    = oda;
-                    _odaIstemiyor = false;
-                    btn.BackColor = RenkSecili;
-                    SecimDegisti?.Invoke(oda);
-                };
-            }
-
-            return btn;
-        }
-
-        private void TumOdaBtnRenkSifirla()
-        {
-            foreach (Control c in Controls)
-            {
-                if (c is FlowLayoutPanel fp)
-                {
-                    foreach (Control fc in fp.Controls)
-                    {
-                        if (fc is Button fb && fb.Tag is OtelOda o && fb.Enabled)
-                            fb.BackColor = RenkBos;
-                    }
-                }
-                // "atla" butonu
-                if (c is Button b && b.Tag?.ToString() == "atla")
-                    b.BackColor = AppTheme.BgCard;
+                ix += 138;
             }
         }
     }

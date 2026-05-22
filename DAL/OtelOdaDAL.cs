@@ -7,16 +7,23 @@ namespace oceangate_r.DAL
 {
     /// <summary>
     /// OtelOdalar ve RezervasyonOdalar tabloları için veri erişim katmanı.
+    ///
+    /// ÖNEMLİ MİMARİ KARAR:
+    /// Otel odaları sefer+tarih bazında bağımsız takip edilir.
+    /// Karayip seferinde 401 nolu oda doluysa Baltık seferinde 401 boş olabilir.
+    /// RezervasyonOdalar.SeferId + SeferTarihi bunu sağlar.
     /// </summary>
     public static class OtelOdaDAL
     {
         /// <summary>
-        /// Tüm aktif otel odalarını getirir.
-        /// Halihazırda rezerve edilmiş odalar Dolu olarak işaretlenir.
+        /// Belirli bir sefer ve tarih için tüm aktif otel odalarını getirir.
+        /// Sadece O sefere+tarihe ait rezervasyonlar dikkate alınır.
         /// </summary>
-        public static List<OtelOda> TumOdalariGetir()
+        public static List<OtelOda> TumOdalariGetir(int seferId, DateTime seferTarihi)
         {
             var list = new List<OtelOda>();
+            string tarihStr = seferTarihi.ToString("yyyy-MM-dd");
+
             using (var conn = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 conn.Open();
@@ -24,26 +31,36 @@ namespace oceangate_r.DAL
                     SELECT o.Id, o.OdaNo, o.Kapasite,
                            CASE WHEN ro.OtelOdaId IS NOT NULL THEN 1 ELSE 0 END AS Dolu
                     FROM   OtelOdalar o
-                    LEFT JOIN RezervasyonOdalar ro ON o.Id = ro.OtelOdaId
-                                                   AND ro.RezervasyonId IN (
-                                                       SELECT Id FROM Rezervasyonlar
-                                                       WHERE Durum NOT IN ('Iptal','Reddedildi')
-                                                   )
+                    LEFT JOIN RezervasyonOdalar ro
+                           ON  o.Id           = ro.OtelOdaId
+                           AND ro.SeferId      = @seferId
+                           AND ro.SeferTarihi  = @seferTarihi
+                           AND ro.RezervasyonId IN (
+                               SELECT Id FROM Rezervasyonlar
+                               WHERE  Durum NOT IN ('Iptal','Reddedildi')
+                           )
                     WHERE  o.AktifMi = 1
                     ORDER  BY o.Kapasite, o.OdaNo";
 
                 using (var cmd = new SQLiteCommand(sql, conn))
-                using (var r   = cmd.ExecuteReader())
                 {
-                    while (r.Read())
+                    cmd.Parameters.AddWithValue("@seferId",     seferId);
+                    cmd.Parameters.AddWithValue("@seferTarihi", tarihStr);
+
+                    using (var r = cmd.ExecuteReader())
                     {
-                        list.Add(new OtelOda
+                        while (r.Read())
                         {
-                            Id       = Convert.ToInt32(r["Id"]),
-                            OdaNo    = r["OdaNo"].ToString(),
-                            Kapasite = Convert.ToInt32(r["Kapasite"]),
-                            Durum    = Convert.ToInt32(r["Dolu"]) == 1 ? OdaDurum.Dolu : OdaDurum.Bos,
-                        });
+                            list.Add(new OtelOda
+                            {
+                                Id       = Convert.ToInt32(r["Id"]),
+                                OdaNo    = r["OdaNo"].ToString(),
+                                Kapasite = Convert.ToInt32(r["Kapasite"]),
+                                Durum    = Convert.ToInt32(r["Dolu"]) == 1
+                                           ? OdaDurum.Dolu
+                                           : OdaDurum.Bos,
+                            });
+                        }
                     }
                 }
             }
@@ -51,32 +68,41 @@ namespace oceangate_r.DAL
         }
 
         /// <summary>
-        /// Seçilen odayı rezervasyona bağlar.
+        /// Seçilen odayı rezervasyona ve ilgili sefer+tarihe bağlar.
         /// </summary>
-        public static void OdaKaydet(int rezervasyonId, int otelOdaId)
+        public static void OdaKaydet(int rezervasyonId, int otelOdaId,
+                                     int seferId, DateTime seferTarihi)
         {
+            string tarihStr = seferTarihi.ToString("yyyy-MM-dd");
             using (var conn = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 conn.Open();
-                using (var cmd = new SQLiteCommand(
-                    "INSERT INTO RezervasyonOdalar (RezervasyonId, OtelOdaId) VALUES (@rid, @oid)", conn))
+                const string sql =
+                    "INSERT INTO RezervasyonOdalar " +
+                    "(RezervasyonId, OtelOdaId, SeferId, SeferTarihi) " +
+                    "VALUES (@rid, @oid, @sid, @starihi)";
+
+                using (var cmd = new SQLiteCommand(sql, conn))
                 {
-                    cmd.Parameters.AddWithValue("@rid", rezervasyonId);
-                    cmd.Parameters.AddWithValue("@oid", otelOdaId);
+                    cmd.Parameters.AddWithValue("@rid",     rezervasyonId);
+                    cmd.Parameters.AddWithValue("@oid",     otelOdaId);
+                    cmd.Parameters.AddWithValue("@sid",     seferId);
+                    cmd.Parameters.AddWithValue("@starihi", tarihStr);
                     cmd.ExecuteNonQuery();
                 }
             }
         }
 
         /// <summary>
-        /// Rezervasyona bağlı odayı getirir (Özet paneli için).
+        /// Rezervasyona bağlı odaları getirir (özet paneli için).
         /// </summary>
-        public static OtelOda RezervasyonunOdasi(int rezervasyonId)
+        public static List<OtelOda> RezervasyonunOdalari(int rezervasyonId)
         {
+            var list = new List<OtelOda>();
             using (var conn = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 conn.Open();
-                string sql = @"
+                const string sql = @"
                     SELECT o.Id, o.OdaNo, o.Kapasite
                     FROM   RezervasyonOdalar ro
                     JOIN   OtelOdalar o ON ro.OtelOdaId = o.Id
@@ -87,17 +113,29 @@ namespace oceangate_r.DAL
                     cmd.Parameters.AddWithValue("@rid", rezervasyonId);
                     using (var r = cmd.ExecuteReader())
                     {
-                        if (r.Read())
-                            return new OtelOda
+                        while (r.Read())
+                            list.Add(new OtelOda
                             {
                                 Id       = Convert.ToInt32(r["Id"]),
                                 OdaNo    = r["OdaNo"].ToString(),
                                 Kapasite = Convert.ToInt32(r["Kapasite"]),
-                            };
+                            });
                     }
                 }
             }
-            return null;
+            return list;
+        }
+
+        /// <summary>
+        /// Belirli sefer+tarih için boş kalan toplam oda kapasitesini döner.
+        /// </summary>
+        public static int ToplamBosKapasite(int seferId, DateTime seferTarihi)
+        {
+            int toplam = 0;
+            foreach (var oda in TumOdalariGetir(seferId, seferTarihi))
+                if (oda.Durum == OdaDurum.Bos)
+                    toplam += oda.Kapasite;
+            return toplam;
         }
     }
 }

@@ -1,0 +1,163 @@
+    <Compile Include="UI\Forms\AdminDashboard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Forms\AdminDashboard.Designer.cs">
+      <DependentUpon>AdminDashboard.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="UI\Forms\AdminDashboard.resx">
+      <DependentUpon>AdminDashboard.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="UI\Forms\BolgeYonetimForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Forms\BolgeYonetimForm.Designer.cs">
+      <DependentUpon>BolgeYonetimForm.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="UI\Forms\BolgeYonetimForm.resx">
+      <DependentUpon>BolgeYonetimForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="UI\Forms\CinsiyetSecimForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Forms\CinsiyetSecimForm.Designer.cs">
+      <DependentUpon>CinsiyetSecimForm.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="UI\Forms\CinsiyetSecimForm.resx">
+      <DependentUpon>CinsiyetSecimForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="UI\Forms\DekontForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Forms\DekontForm.Designer.cs">
+      <DependentUpon>DekontForm.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="UI\Forms\DekontForm.resx">
+      <DependentUpon>DekontForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="UI\Forms\KoltukSecimPanel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Forms\KoltukSecimPanel.Designer.cs">
+      <DependentUpon>KoltukSecimPanel.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="UI\Forms\KoltukSecimPanel.resx">
+      <DependentUpon>KoltukSecimPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="UI\Forms\LoginForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Forms\LoginForm.Designer.cs">
+      <DependentUpon>LoginForm.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="UI\Forms\LoginForm.resx">
+      <DependentUpon>LoginForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="UI\Forms\OtelOdaSecimPanel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Forms\OtelOdaSecimPanel.Designer.cs">
+      <DependentUpon>OtelOdaSecimPanel.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="UI\Forms\OtelOdaSecimPanel.resx">
+      <DependentUpon>OtelOdaSecimPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="UI\Forms\Rez1BolgeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Forms\Rez1BolgeForm.Designer.cs">
+      <DependentUpon>Rez1BolgeForm.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="UI\Forms\Rez1BolgeForm.resx">
+      <DependentUpon>Rez1BolgeForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="UI\Forms\Rez2SeferForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Forms\Rez2SeferForm.Designer.cs">
+      <DependentUpon>Rez2SeferForm.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="UI\Forms\Rez2SeferForm.resx">
+      <DependentUpon>Rez2SeferForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="UI\Forms\Rez3TarihForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Forms\Rez3TarihForm.Designer.cs">
+      <DependentUpon>Rez3TarihForm.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="UI\Forms\Rez3TarihForm.resx">
+      <DependentUpon>Rez3TarihForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="UI\Forms\Rez4KoltukForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Forms\Rez4KoltukForm.Designer.cs">
+      <DependentUpon>Rez4KoltukForm.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="UI\Forms\Rez4KoltukForm.resx">
+      <DependentUpon>Rez4KoltukForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="UI\Forms\Rez5OdaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Forms\Rez5OdaForm.Designer.cs">
+      <DependentUpon>Rez5OdaForm.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="UI\Forms\Rez5OdaForm.resx">
+      <DependentUpon>Rez5OdaForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="UI\Forms\Rez6OzetForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Forms\Rez6OzetForm.Designer.cs">
+      <DependentUpon>Rez6OzetForm.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="UI\Forms\Rez6OzetForm.resx">
+      <DependentUpon>Rez6OzetForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="UI\Forms\RezervasyonDetayForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Forms\RezervasyonDetayForm.Designer.cs">
+      <DependentUpon>RezervasyonDetayForm.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="UI\Forms\RezervasyonDetayForm.resx">
+      <DependentUpon>RezervasyonDetayForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="UI\Forms\SeferYonetimForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Forms\SeferYonetimForm.Designer.cs">
+      <DependentUpon>SeferYonetimForm.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="UI\Forms\SeferYonetimForm.resx">
+      <DependentUpon>SeferYonetimForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="UI\Forms\TalepYonetimForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Forms\TalepYonetimForm.Designer.cs">
+      <DependentUpon>TalepYonetimForm.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="UI\Forms\TalepYonetimForm.resx">
+      <DependentUpon>TalepYonetimForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="UI\Forms\UserDashboard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Forms\UserDashboard.Designer.cs">
+      <DependentUpon>UserDashboard.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="UI\Forms\UserDashboard.resx">
+      <DependentUpon>UserDashboard.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="UI\Forms\YeniRezervasyonForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Forms\YeniRezervasyonForm.Designer.cs">
+      <DependentUpon>YeniRezervasyonForm.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="UI\Forms\YeniRezervasyonForm.resx">
+      <DependentUpon>YeniRezervasyonForm.cs</DependentUpon>
+    </EmbeddedResource>
+

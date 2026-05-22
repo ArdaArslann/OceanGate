@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Drawing;
 using System.Drawing.Printing;
 using System.Windows.Forms;
@@ -12,7 +12,7 @@ namespace oceangate_r
     /// Rezervasyon dekontu: Yazdırma desteği ile şık fatura görünümü.
     /// ShowDialog() olarak çağrılır — uygulama kapanmaz.
     /// </summary>
-    public class DekontForm : Form
+    public partial class DekontForm : Form
     {
         private readonly Rezervasyon _rezervasyon;
         private PrintDocument _printDoc;
@@ -20,19 +20,63 @@ namespace oceangate_r
         public DekontForm(Rezervasyon rez)
         {
             _rezervasyon = rez;
-
-            BackColor       = AppTheme.BgDark;
-            ForeColor       = AppTheme.TextLight;
-            Font            = AppTheme.BodyFont;
-            FormBorderStyle = FormBorderStyle.None;
-            Size            = new Size(680, 680);
-            StartPosition   = FormStartPosition.CenterScreen;
-            DoubleBuffered  = true;
-
-            _printDoc = new PrintDocument();
+            _printDoc    = new System.Drawing.Printing.PrintDocument();
             _printDoc.PrintPage += PrintDoc_PrintPage;
+            InitializeComponent();
 
-            BuildUI();
+            // Event bağlamaları
+            _btnYazdir.Click += (s, e) =>
+            {
+                using (var pd = new System.Windows.Forms.PrintDialog { Document = _printDoc, UseEXDialog = true })
+                {
+                    if (pd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                        _printDoc.Print();
+                }
+            };
+            _btnKapat.Click += (s, e) => Close();
+
+            // Çalışma zamanı: Dekont satırlarını doldur
+            BuildDekontRows();
+        }
+
+        private void BuildDekontRows()
+        {
+            var satirlar = new (string Anahtar, string Deger)[]
+            {
+                ("Dekont No",    _rezervasyon.DekontNo),
+                ("Tarih",        _rezervasyon.RezervasyonTarihi.ToString("dd.MM.yyyy HH:mm")),
+                ("Müşteri",      _rezervasyon.KullaniciAdi),
+                ("Sefer",        _rezervasyon.SeferBilgisi),
+                ("Sefer Tarihi", _rezervasyon.SeferTarihiStr),
+                ("Kişi Sayısı",  $"{_rezervasyon.KisiSayisi} kişi"),
+                ("Toplam Tutar", _rezervasyon.ToplamTutarStr),
+                ("Durum",        "Onaylandı"),
+            };
+
+            int sy = 64;
+            bool dark = false;
+            foreach (var (anahtar, deger) in satirlar)
+            {
+                var rowBg = new System.Windows.Forms.Panel
+                {
+                    Location  = new System.Drawing.Point(0, sy - 4),
+                    Size      = new System.Drawing.Size(600, 36),
+                    BackColor = dark ? System.Drawing.Color.FromArgb(30, 255, 255, 255)
+                                     : System.Drawing.Color.Transparent,
+                };
+                var lKey = UIHelper.MakeLabel(anahtar, AppTheme.SmallFont,
+                    AppTheme.TextMuted, 20, 4, 180, 24);
+                var lVal = UIHelper.MakeLabel(deger, AppTheme.BodyBold,
+                    anahtar == "Toplam Tutar" ? AppTheme.Accent :
+                    anahtar == "Durum"        ? AppTheme.Success : AppTheme.TextLight,
+                    210, 4, 370, 24);
+                if (anahtar == "Toplam Tutar") lVal.Font = AppTheme.SubFont;
+                rowBg.Controls.Add(lKey);
+                rowBg.Controls.Add(lVal);
+                _card.Controls.Add(rowBg);
+                sy += 40;
+                dark = !dark;
+            }
         }
 
         protected override CreateParams CreateParams
@@ -40,112 +84,8 @@ namespace oceangate_r
             get { var cp = base.CreateParams; cp.ClassStyle |= 0x20000; return cp; }
         }
 
-        private void BuildUI()
-        {
-            // Başarı animasyonu — yeşil üst bar
-            var successBar = new Panel
-            {
-                Location  = new Point(0, 0),
-                Size      = new Size(680, 8),
-                BackColor = AppTheme.Success,
-            };
-            Controls.Add(successBar);
 
-            // Başlık
-            var lblCheck = UIHelper.MakeLabel("", new Font("Segoe UI", 36f, FontStyle.Bold, GraphicsUnit.Point),
-                AppTheme.Success, 0, 20, 680, 56);
-            lblCheck.TextAlign = ContentAlignment.MiddleCenter;
-
-            var lblBaslik = UIHelper.MakeLabel("Rezervasyon Başarılı!", AppTheme.TitleFont,
-                AppTheme.TextLight, 0, 82, 680, 36);
-            lblBaslik.TextAlign = ContentAlignment.MiddleCenter;
-
-            var lblSub = UIHelper.MakeLabel("Rezervasyonunuz sisteme kaydedilmiştir.",
-                AppTheme.BodyFont, AppTheme.TextMuted, 0, 122, 680, 24);
-            lblSub.TextAlign = ContentAlignment.MiddleCenter;
-
-            // Dekont kartı
-            var card = UIHelper.MakeCard(40, 158, 600, 390, AppTheme.BgCard);
-
-            // Başlık çizgisi
-            var cardTitle = UIHelper.MakeLabel("REZERVASYON DEKONTU", AppTheme.SmallBold,
-                AppTheme.Accent, 0, 16, 600, 24);
-            cardTitle.TextAlign = ContentAlignment.MiddleCenter;
-            card.Controls.Add(cardTitle);
-
-            var separator = new Panel
-            {
-                Location  = new Point(20, 48),
-                Size      = new Size(560, 1),
-                BackColor = AppTheme.Border,
-            };
-            card.Controls.Add(separator);
-
-            // Dekont satırları
-            var satirlar = new (string Anahtar, string Deger)[]
-            {
-                ("Dekont No",          _rezervasyon.DekontNo),
-                ("Tarih",              _rezervasyon.RezervasyonTarihi.ToString("dd.MM.yyyy HH:mm")),
-                ("Müşteri",            _rezervasyon.KullaniciAdi),
-                ("Sefer",              _rezervasyon.SeferBilgisi),
-                ("Sefer Tarihi",       _rezervasyon.SeferTarihiStr),
-                ("Kişi Sayısı",        $"{_rezervasyon.KisiSayisi} kişi"),
-                ("Toplam Tutar",       _rezervasyon.ToplamTutarStr),
-                ("Durum",              "Onaylandı"),
-            };
-
-            int sy = 64;
-            bool dark = false;
-            foreach (var (anahtar, deger) in satirlar)
-            {
-                var rowBg = new Panel
-                {
-                    Location  = new Point(0, sy - 4),
-                    Size      = new Size(600, 36),
-                    BackColor = dark ? Color.FromArgb(30, 255, 255, 255) : Color.Transparent,
-                };
-                card.Controls.Add(rowBg);
-
-                var lKey = UIHelper.MakeLabel(anahtar, AppTheme.SmallFont,
-                    AppTheme.TextMuted, 20, 4, 180, 24);
-                var lVal = UIHelper.MakeLabel(deger, AppTheme.BodyBold,
-                    anahtar == "Toplam Tutar" ? AppTheme.Accent :
-                    anahtar == "Durum" ? AppTheme.Success : AppTheme.TextLight,
-                    210, 4, 370, 24);
-
-                if (anahtar == "Toplam Tutar") lVal.Font = AppTheme.SubFont;
-
-                rowBg.Controls.Add(lKey);
-                rowBg.Controls.Add(lVal);
-                sy += 40;
-                dark = !dark;
-            }
-
-            Controls.Add(lblCheck);
-            Controls.Add(lblBaslik);
-            Controls.Add(lblSub);
-            Controls.Add(card);
-
-            // Butonlar
-            var btnYazdir = UIHelper.MakeButton("Yazdır", 40, 564, 190, 46);
-            btnYazdir.SetMuted();
-            btnYazdir.Click += (s, e) =>
-            {
-                using (var pd = new PrintDialog { Document = _printDoc, UseEXDialog = true })
-                {
-                    if (pd.ShowDialog() == DialogResult.OK)
-                        _printDoc.Print();
-                }
-            };
-
-            var btnKapat = UIHelper.MakeButton("Dashboard'a Dön", 260, 564, 380, 46);
-            btnKapat.Click += (s, e) => Close();
-
-            Controls.Add(btnYazdir);
-            Controls.Add(btnKapat);
-        }
-
-        // Yazdırma 
+        // Yazdırma
 
         private void PrintDoc_PrintPage(object sender, PrintPageEventArgs e)
         {
@@ -203,6 +143,11 @@ namespace oceangate_r
                 new Font("Segoe UI", 8f), new SolidBrush(mutedColor), x, y);
 
             e.HasMorePages = false;
+        }
+
+        private void _lblCheck_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

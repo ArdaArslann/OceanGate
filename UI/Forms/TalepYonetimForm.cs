@@ -9,49 +9,14 @@ using oceangate_r.UI.Controls;
 namespace oceangate_r
 {
     /// <summary>Admin – Kullanıcı talep yönetim formu (Onayla / Reddet).</summary>
-    public class TalepYonetimForm : Form
+    public partial class TalepYonetimForm : Form
     {
-        private DataGridView _dgv;
-        private OceanButton  _btnOnayla, _btnReddet, _btnYenile;
-        private OceanButton  _btnTabTumu, _btnTabBekleyen;
-        private Panel        _actionBar;   // Alan olarak sakla — DoLayout'ta kullanılır
-        private int          _seciliId = -1;
+        private int _seciliId = -1;
 
         public TalepYonetimForm()
         {
+            InitializeComponent();
             DoubleBuffered = true;
-            BuildUI();
-            YukleVeriler();
-        }
-
-        private void BuildUI()
-        {
-            var lblH = UIHelper.MakeLabel("Talep Yönetimi", AppTheme.TitleFont,
-                AppTheme.TextLight, 24, 22, 500, 36);
-            var lblSub = UIHelper.MakeLabel("Kullanıcıların gönderdiği iptal, değişiklik ve iade talepleri",
-                AppTheme.BodyFont, AppTheme.TextMuted, 24, 62, 700, 24);
-            Controls.AddRange(new Control[] { lblH, lblSub });
-
-            // Filtre butonları (Sekmeler)
-            _btnTabTumu = UIHelper.MakeButton("Tümü", 24, 100, 100, 36);
-            _btnTabTumu.SetColors(AppTheme.Accent, AppTheme.AccentHover, AppTheme.AccentDark); // Varsayılan aktif
-            _btnTabTumu.Click += (s, e) => SetTab(false);
-
-            _btnTabBekleyen = UIHelper.MakeButton("Bekleyenler", 136, 100, 160, 36);
-            _btnTabBekleyen.SetMuted();
-            _btnTabBekleyen.Click += (s, e) => SetTab(true);
-
-            _btnYenile = UIHelper.MakeButton("Yenile", 308, 100, 100, 36);
-            _btnYenile.SetMuted();
-            _btnYenile.Click += (s, e) => {
-                bool isBekleyen = _btnTabBekleyen.BackColor != AppTheme.BgCard; // Accent ise true
-                YukleVeriler(isBekleyen);
-            };
-
-            Controls.AddRange(new Control[] { _btnTabTumu, _btnTabBekleyen, _btnYenile });
-
-            // Grid — 148 px üstten başlıyor
-            _dgv = new DataGridView { Location = new Point(24, 150) };
             UIHelper.StyleGrid(_dgv);
             _dgv.Columns.AddRange(
                 new DataGridViewTextBoxColumn { Name = "Id",        HeaderText = "ID",           FillWeight = 5,  Visible = false },
@@ -64,36 +29,33 @@ namespace oceangate_r
                 new DataGridViewTextBoxColumn { Name = "Durum",     HeaderText = "Durum",        FillWeight = 14 }
             );
             _dgv.SelectionChanged += DgvSelectionChanged;
-            Controls.Add(_dgv);
+            _btnTabTumu.SetColors(AppTheme.Accent, AppTheme.AccentHover, AppTheme.AccentDark);
+            _btnTabBekleyen.SetMuted();
 
-            // Aksiyon çubuğu (alan olarak) 
-            _actionBar = UIHelper.MakeCard(24, 0, 700, 70, AppTheme.BgCard);
-
-            _btnOnayla = UIHelper.MakeButton("Onayla", 16, 12, 200, 46);
             _btnOnayla.SetSuccess();
-            _btnOnayla.Enabled = false;
-            _btnOnayla.Click += BtnOnayla_Click;
-
-            _btnReddet = UIHelper.MakeButton("Reddet", 228, 12, 200, 46);
             _btnReddet.SetDanger();
-            _btnReddet.Enabled = false;
-            _btnReddet.Click += BtnReddet_Click;
+            _btnTabTumu.Click     += (s, e) => SetTab(false);
+            _btnTabBekleyen.Click += (s, e) => SetTab(true);
 
-            var lblHint = UIHelper.MakeLabel("Bir talep seçerek işlem yapabilirsiniz.",
-                AppTheme.SmallFont, AppTheme.TextMuted, 440, 20, 250, 30);
-
-            _actionBar.Controls.AddRange(new Control[] { _btnOnayla, _btnReddet, lblHint });
-            Controls.Add(_actionBar);
-
+            _btnOnayla.Click      += BtnOnayla_Click;
+            _btnReddet.Click      += BtnReddet_Click;
             Resize += (s, e) => DoLayout();
             DoLayout();
+            YukleVeriler();
         }
 
         private void DoLayout()
         {
-            int w = Width, h = Height;
-            int gridH = h - 150 - 86;          // Üst 150px + alt aksiyon 70px + boşluk
-            if (gridH < 60) gridH = 60;
+            int w = ClientSize.Width;
+            int h = ClientSize.Height;
+
+            // Sabit üst bölüm: 150px (başlık + sekmeler + boşluk)
+            // Sabit alt bölüm: 86px (aksiyon çubuğu 70px + 16px boşluk)
+            // Geri kalan: tablo
+            int usedH = 150 + 86;
+            int gridH = Math.Max(h - usedH, 80);
+
+            _dgv.Location    = new Point(24, 150);
             _dgv.Size        = new Size(w - 48, gridH);
             _actionBar.Location = new Point(24, 150 + gridH + 8);
             _actionBar.Size     = new Size(w - 48, 70);

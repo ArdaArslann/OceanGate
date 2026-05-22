@@ -1,4 +1,4 @@
-namespace oceangate_r.Entities
+﻿namespace oceangate_r.Entities
 {
     public class Bolge
     {

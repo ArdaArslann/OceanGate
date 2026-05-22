@@ -105,10 +105,33 @@ namespace oceangate_r.DAL
             using (var conn = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 conn.Open();
-                using (var cmd = new SQLiteCommand("UPDATE Seferler SET AktifMi=0 WHERE Id=@id", conn))
+                using (var tr = conn.BeginTransaction())
                 {
-                    cmd.Parameters.AddWithValue("@id", id);
-                    cmd.ExecuteNonQuery();
+                    try
+                    {
+                        var cmds = new[]
+                        {
+                            "DELETE FROM Talepler WHERE RezervasyonId IN (SELECT Id FROM Rezervasyonlar WHERE SeferId=@id)",
+                            "DELETE FROM RezervasyonKoltuklar WHERE SeferId=@id",
+                            "DELETE FROM RezervasyonOdalar WHERE SeferId=@id",
+                            "DELETE FROM Rezervasyonlar WHERE SeferId=@id",
+                            "DELETE FROM Seferler WHERE Id=@id"
+                        };
+                        foreach (var sql in cmds)
+                        {
+                            using (var cmd = new SQLiteCommand(sql, conn, tr))
+                            {
+                                cmd.Parameters.AddWithValue("@id", id);
+                                cmd.ExecuteNonQuery();
+                            }
+                        }
+                        tr.Commit();
+                    }
+                    catch
+                    {
+                        tr.Rollback();
+                        throw;
+                    }
                 }
             }
         }

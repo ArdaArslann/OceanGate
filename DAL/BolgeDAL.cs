@@ -58,16 +58,39 @@ namespace oceangate_r.DAL
             }
         }
 
-        /// <summary>Soft-delete: aktif durumu 0 yapılır, fiziksel silme yapılmaz.</summary>
         public static void Sil(int id)
         {
             using (var conn = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
                 conn.Open();
-                using (var cmd = new SQLiteCommand("UPDATE Bolgeler SET AktifMi=0 WHERE Id=@id", conn))
+                using (var tr = conn.BeginTransaction())
                 {
-                    cmd.Parameters.AddWithValue("@id", id);
-                    cmd.ExecuteNonQuery();
+                    try
+                    {
+                        var cmds = new[]
+                        {
+                            "DELETE FROM Talepler WHERE RezervasyonId IN (SELECT Id FROM Rezervasyonlar WHERE SeferId IN (SELECT Id FROM Seferler WHERE BolgeId=@id))",
+                            "DELETE FROM RezervasyonKoltuklar WHERE SeferId IN (SELECT Id FROM Seferler WHERE BolgeId=@id)",
+                            "DELETE FROM RezervasyonOdalar WHERE SeferId IN (SELECT Id FROM Seferler WHERE BolgeId=@id)",
+                            "DELETE FROM Rezervasyonlar WHERE SeferId IN (SELECT Id FROM Seferler WHERE BolgeId=@id)",
+                            "DELETE FROM Seferler WHERE BolgeId=@id",
+                            "DELETE FROM Bolgeler WHERE Id=@id"
+                        };
+                        foreach (var sql in cmds)
+                        {
+                            using (var cmd = new SQLiteCommand(sql, conn, tr))
+                            {
+                                cmd.Parameters.AddWithValue("@id", id);
+                                cmd.ExecuteNonQuery();
+                            }
+                        }
+                        tr.Commit();
+                    }
+                    catch
+                    {
+                        tr.Rollback();
+                        throw;
+                    }
                 }
             }
         }
