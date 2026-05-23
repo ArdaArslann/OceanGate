@@ -13,7 +13,7 @@ namespace oceangate_r.DAL
             {
                 conn.Open();
                 using (var cmd = new SQLiteCommand(
-                    "SELECT * FROM Kullanicilar WHERE KullaniciAdi=@k ", conn))
+                    "SELECT * FROM Kullanicilar WHERE KullaniciAdi=@k AND Sifre=@s", conn))
                 {
                     cmd.Parameters.AddWithValue("@k", kullaniciAdi);
                     cmd.Parameters.AddWithValue("@s", sifre);
