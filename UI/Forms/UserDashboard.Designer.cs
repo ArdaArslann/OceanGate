@@ -1,4 +1,4 @@
-﻿namespace oceangate_r
+namespace oceangate_r
 {
     partial class UserDashboard
     {
@@ -95,7 +95,7 @@
             this._sidebar.Controls.Add(this._btnCikis);
             this._sidebar.Location = new System.Drawing.Point(0, 50);
             this._sidebar.Name = "_sidebar";
-            this._sidebar.Size = new System.Drawing.Size(230, 550);
+            this._sidebar.Size = new System.Drawing.Size(230, 730);
             this._sidebar.TabIndex = 1;
             // 
             // _userCard
@@ -170,7 +170,7 @@
             this._btnMenuAnaSayfa.Name = "_btnMenuAnaSayfa";
             this._btnMenuAnaSayfa.Size = new System.Drawing.Size(230, 48);
             this._btnMenuAnaSayfa.TabIndex = 3;
-            this._btnMenuAnaSayfa.Text = "Ana Sayfa";
+            this._btnMenuAnaSayfa.Text = "  🏠  Ana Sayfa";
             this._btnMenuAnaSayfa.UseVisualStyleBackColor = false;
             // 
             // _btnMenuYeniRez
@@ -186,7 +186,7 @@
             this._btnMenuYeniRez.Name = "_btnMenuYeniRez";
             this._btnMenuYeniRez.Size = new System.Drawing.Size(230, 48);
             this._btnMenuYeniRez.TabIndex = 4;
-            this._btnMenuYeniRez.Text = "Yeni Rezervasyon";
+            this._btnMenuYeniRez.Text = "  ➕  Yeni Rezervasyon";
             this._btnMenuYeniRez.UseVisualStyleBackColor = false;
             this._btnMenuYeniRez.Click += new System.EventHandler(this._btnMenuYeniRez_Click);
             // 
@@ -203,7 +203,7 @@
             this._btnMenuRezlerim.Name = "_btnMenuRezlerim";
             this._btnMenuRezlerim.Size = new System.Drawing.Size(230, 48);
             this._btnMenuRezlerim.TabIndex = 5;
-            this._btnMenuRezlerim.Text = "Rezervasyonlarım";
+            this._btnMenuRezlerim.Text = "  📋  Rezervasyonlarım";
             this._btnMenuRezlerim.UseVisualStyleBackColor = false;
             // 
             // _btnCikis
@@ -215,11 +215,11 @@
             this._btnCikis.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this._btnCikis.Font = new System.Drawing.Font("Segoe UI", 10F);
             this._btnCikis.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
-            this._btnCikis.Location = new System.Drawing.Point(0, 490);
+            this._btnCikis.Location = new System.Drawing.Point(0, 670);
             this._btnCikis.Name = "_btnCikis";
             this._btnCikis.Size = new System.Drawing.Size(230, 48);
             this._btnCikis.TabIndex = 6;
-            this._btnCikis.Text = "Çıkış Yap";
+            this._btnCikis.Text = "  🚪  Çıkış Yap";
             this._btnCikis.UseVisualStyleBackColor = false;
             // 
             // _contentArea
@@ -231,7 +231,7 @@
             this._contentArea.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
             this._contentArea.Location = new System.Drawing.Point(230, 50);
             this._contentArea.Name = "_contentArea";
-            this._contentArea.Size = new System.Drawing.Size(1190, 550);
+            this._contentArea.Size = new System.Drawing.Size(1050, 730);
             this._contentArea.TabIndex = 2;
             // 
             // UserDashboard

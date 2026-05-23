@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using oceangate_r.DAL;
@@ -14,6 +14,7 @@ namespace oceangate_r
     public partial class UserDashboard : Form
     {
         private const int W = 1280, H = 780, TH = 50, SW = 230;
+        private const int ContentH = 730; // H - TH
 
         public UserDashboard()
         {
@@ -183,7 +184,7 @@ namespace oceangate_r
             var dgv = new DataGridView
             {
                 Location = new Point(24, 72),
-                Size     = new Size(cw, H - TH - 140),
+                Size     = new Size(cw, ContentH - 140),
             };
             UIHelper.StyleGrid(dgv);
             dgv.Columns.AddRange(
@@ -206,10 +207,15 @@ namespace oceangate_r
                 dgv.Rows[idx].DefaultCellStyle.ForeColor = UIHelper.DurumRengi(r.Durum);
             }
 
-            var btnDetay = UIHelper.MakeButton("Detay / Talep Oluştur", 24, H - TH - 62, 260, 44);
+            var btnDetay = UIHelper.MakeButton("Detay / Talep Oluştur", 24, ContentH - 60, 280, 44);
             btnDetay.Click += (s, e) =>
             {
-                if (dgv.SelectedRows.Count == 0) { MessageBox.Show("Lütfen detaylarını görmek istediğiniz rezervasyonu tablodan seçiniz.", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Information); return; }
+                if (dgv.SelectedRows.Count == 0)
+                {
+                    MessageBox.Show("Lütfen detaylarını görmek istediğiniz rezervasyonu tablodan seçiniz.",
+                        "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
                 int rezId = Convert.ToInt32(dgv.SelectedRows[0].Cells["Id"].Value);
                 var secili = rezervasyonlar.Find(x => x.Id == rezId);
                 if (secili == null) return;

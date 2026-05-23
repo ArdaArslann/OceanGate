@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using oceangate_r.DAL;
@@ -96,7 +96,7 @@ namespace oceangate_r
                     t.Id, t.RezervasyonId, t.DekontNo, t.KullaniciAdi,
                     tipGoster, t.Aciklama, t.TalepTarihiStr,
                     t.Durum == "Bekliyor"   ? "Bekliyor" :
-                    t.Durum == "Onaylandi"  ? "Onaylandıı" : "Reddedildi");
+                    t.Durum == "Onaylandi"  ? "Onaylandı" : "Reddedildi");
 
                 Color renk = t.Durum == "Bekliyor"  ? AppTheme.Warning :
                              t.Durum == "Onaylandi" ? AppTheme.Success : AppTheme.Danger;

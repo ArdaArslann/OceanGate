@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using System;
 using System.Globalization;
 using System.Windows.Forms;
@@ -127,20 +127,29 @@ namespace oceangate_r
         /// </summary>
         private void KapatVeDashboaraDon()
         {
-            // _oncekiForm ? Rez5OdaForm ? Rez4KoltukForm ? ... ? Rez1BolgeForm
-            // Rez1BolgeForm'un _oncekiForm'u UserDashboard'dur.
-            // Basit y?ntem: t?m Rez* formlar?n? bul ve kapat
+            // Önce UserDashboard'u bul ve yenile
+            UserDashboard dashboard = null;
             foreach (Form f in Application.OpenForms)
             {
-                if (f is UserDashboard dash)
+                if (f is UserDashboard d)
                 {
-                    
+                    dashboard = d;
                     break;
                 }
             }
-            // Geri kalan Rez* formlar?n? kapat (Close bu formdan sonra zaten ?a?r?lacak)
-            _oncekiForm?.Close();
-            Close();
+
+            // Tüm Rez* formlarını güvenle kapat (ToList - iteration sırasında koleksiyon değişmesin)
+            var rezForms = Application.OpenForms
+                .Cast<Form>()
+                .Where(f => f.Name.StartsWith("Rez"))
+                .ToList();
+
+            foreach (var f in rezForms)
+                if (!f.IsDisposed) f.Close();
+
+            // Dashboard'u yenile (formlar kapatıldıktan sonra)
+            if (dashboard != null && !dashboard.IsDisposed)
+                dashboard.Yenile();
         }
 
         private void btnGeri_Click(object sender, EventArgs e)

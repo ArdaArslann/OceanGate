@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using oceangate_r.DAL;
@@ -19,6 +19,13 @@ namespace oceangate_r
             InitializeComponent();
             UIHelper.EnableDrag(_titleBar, this);
             _lblAdminTag.Text = SessionManager.AktifKullanici?.TamAd ?? "Admin";
+
+            // Buton metinleri (Designer'dan eksik kaldı)
+            _btnMenuGenel.Text = "  📊  Genel Bakış";
+            _btnMenuBolge.Text = "  🗺️  Bölgeler";
+            _btnMenuSefer.Text = "  🚢  Seferler";
+            _btnMenuTalep.Text = "  📋  Talepler";
+            _btnCikis.Text     = "  🚪  Çıkış Yap";
 
             // Event bağlamaları
             _btnCikis.Click    += (s, e) => Close();

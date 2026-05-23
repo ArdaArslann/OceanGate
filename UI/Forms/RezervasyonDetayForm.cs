@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using oceangate_r.DAL;
@@ -19,10 +19,6 @@ namespace oceangate_r
         {
             _rez = rez;
             InitializeComponent();
-            UIHelper.EnableDrag(_titleBar, this);
-
-            // Event bağlamaları
-            _btnKapat.Click += (s, e) => Close();
             _cbTip.SelectedIndexChanged += (s, e) =>
             {
                 _dtpYeni.Visible = _cbTip.SelectedIndex == 1;
