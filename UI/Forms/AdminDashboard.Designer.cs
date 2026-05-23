@@ -31,8 +31,9 @@
             this._sidebar.SuspendLayout();
             this._userCard.SuspendLayout();
             this.SuspendLayout();
-            
-                         
+            // 
+            // _titleBar
+            // 
             this._titleBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(15)))), ((int)(((byte)(30)))));
             this._titleBar.Controls.Add(this._lblLogo);
             this._titleBar.Controls.Add(this._lblAdminTag);
@@ -40,9 +41,9 @@
             this._titleBar.Name = "_titleBar";
             this._titleBar.Size = new System.Drawing.Size(1360, 50);
             this._titleBar.TabIndex = 0;
-             
-           
-            
+            // 
+            // _lblLogo
+            // 
             this._lblLogo.BackColor = System.Drawing.Color.Transparent;
             this._lblLogo.Font = new System.Drawing.Font("Segoe UI", 13F, System.Drawing.FontStyle.Bold);
             this._lblLogo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(14)))), ((int)(((byte)(165)))), ((int)(((byte)(233)))));
@@ -52,7 +53,9 @@
             this._lblLogo.TabIndex = 0;
             this._lblLogo.Text = "OCEANGATE";
             this._lblLogo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-         
+            // 
+            // _lblAdminTag
+            // 
             this._lblAdminTag.BackColor = System.Drawing.Color.Transparent;
             this._lblAdminTag.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this._lblAdminTag.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(158)))), ((int)(((byte)(11)))));
@@ -62,8 +65,9 @@
             this._lblAdminTag.TabIndex = 1;
             this._lblAdminTag.Text = "Admin Paneli";
             this._lblAdminTag.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            
-            
+            // 
+            // _sidebar
+            // 
             this._sidebar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this._sidebar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(15)))), ((int)(((byte)(30)))));
@@ -77,8 +81,9 @@
             this._sidebar.Name = "_sidebar";
             this._sidebar.Size = new System.Drawing.Size(240, 550);
             this._sidebar.TabIndex = 1;
-          
-
+            // 
+            // _userCard
+            // 
             this._userCard.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(28)))), ((int)(((byte)(52)))));
             this._userCard.Controls.Add(this._lblAvatar);
             this._userCard.Controls.Add(this._lblRole);
@@ -86,30 +91,31 @@
             this._userCard.Name = "_userCard";
             this._userCard.Size = new System.Drawing.Size(240, 100);
             this._userCard.TabIndex = 0;
-          
-            
+            // 
+            // _lblAvatar
+            // 
             this._lblAvatar.BackColor = System.Drawing.Color.Transparent;
             this._lblAvatar.Font = new System.Drawing.Font("Segoe UI", 22F);
             this._lblAvatar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(158)))), ((int)(((byte)(11)))));
-            this._lblAvatar.Location = new System.Drawing.Point(0, 12);
+            this._lblAvatar.Location = new System.Drawing.Point(76, 13);
             this._lblAvatar.Name = "_lblAvatar";
             this._lblAvatar.Size = new System.Drawing.Size(240, 48);
             this._lblAvatar.TabIndex = 0;
             this._lblAvatar.Text = "👤";
-            this._lblAvatar.Text = "👤";
-          
-
+            // 
+            // _lblRole
+            // 
             this._lblRole.BackColor = System.Drawing.Color.Transparent;
             this._lblRole.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this._lblRole.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(158)))), ((int)(((byte)(11)))));
-            this._lblRole.Location = new System.Drawing.Point(0, 64);
+            this._lblRole.Location = new System.Drawing.Point(76, 65);
             this._lblRole.Name = "_lblRole";
             this._lblRole.Size = new System.Drawing.Size(240, 24);
             this._lblRole.TabIndex = 1;
             this._lblRole.Text = "YÖNETİCİ";
-            this._lblRole.Text = "YÖNETİCİ";
-           
-
+            // 
+            // _btnMenuGenel
+            // 
             this._btnMenuGenel.BackColor = System.Drawing.Color.Transparent;
             this._btnMenuGenel.Cursor = System.Windows.Forms.Cursors.Hand;
             this._btnMenuGenel.FlatAppearance.BorderSize = 0;
@@ -121,11 +127,10 @@
             this._btnMenuGenel.Name = "_btnMenuGenel";
             this._btnMenuGenel.Size = new System.Drawing.Size(240, 48);
             this._btnMenuGenel.TabIndex = 1;
-
-
             this._btnMenuGenel.UseVisualStyleBackColor = false;
-          
-
+            // 
+            // _btnMenuBolge
+            // 
             this._btnMenuBolge.BackColor = System.Drawing.Color.Transparent;
             this._btnMenuBolge.Cursor = System.Windows.Forms.Cursors.Hand;
             this._btnMenuBolge.FlatAppearance.BorderSize = 0;
@@ -137,11 +142,10 @@
             this._btnMenuBolge.Name = "_btnMenuBolge";
             this._btnMenuBolge.Size = new System.Drawing.Size(240, 48);
             this._btnMenuBolge.TabIndex = 2;
-
-
             this._btnMenuBolge.UseVisualStyleBackColor = false;
-         
-
+            // 
+            // _btnMenuSefer
+            // 
             this._btnMenuSefer.BackColor = System.Drawing.Color.Transparent;
             this._btnMenuSefer.Cursor = System.Windows.Forms.Cursors.Hand;
             this._btnMenuSefer.FlatAppearance.BorderSize = 0;
@@ -153,11 +157,10 @@
             this._btnMenuSefer.Name = "_btnMenuSefer";
             this._btnMenuSefer.Size = new System.Drawing.Size(240, 48);
             this._btnMenuSefer.TabIndex = 3;
-
-
             this._btnMenuSefer.UseVisualStyleBackColor = false;
-        
-
+            // 
+            // _btnMenuTalep
+            // 
             this._btnMenuTalep.BackColor = System.Drawing.Color.Transparent;
             this._btnMenuTalep.Cursor = System.Windows.Forms.Cursors.Hand;
             this._btnMenuTalep.FlatAppearance.BorderSize = 0;
@@ -169,11 +172,10 @@
             this._btnMenuTalep.Name = "_btnMenuTalep";
             this._btnMenuTalep.Size = new System.Drawing.Size(240, 48);
             this._btnMenuTalep.TabIndex = 5;
-
-
             this._btnMenuTalep.UseVisualStyleBackColor = false;
-          
-
+            // 
+            // _btnCikis
+            // 
             this._btnCikis.BackColor = System.Drawing.Color.Transparent;
             this._btnCikis.Cursor = System.Windows.Forms.Cursors.Hand;
             this._btnCikis.FlatAppearance.BorderSize = 0;
@@ -185,11 +187,10 @@
             this._btnCikis.Name = "_btnCikis";
             this._btnCikis.Size = new System.Drawing.Size(240, 48);
             this._btnCikis.TabIndex = 6;
-
-
             this._btnCikis.UseVisualStyleBackColor = false;
-            
-
+            // 
+            // _contentArea
+            // 
             this._contentArea.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -199,8 +200,9 @@
             this._contentArea.Name = "_contentArea";
             this._contentArea.Size = new System.Drawing.Size(1390, 550);
             this._contentArea.TabIndex = 2;
-           
-
+            // 
+            // AdminDashboard
+            // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(10)))), ((int)(((byte)(15)))), ((int)(((byte)(30)))));
             this.ClientSize = new System.Drawing.Size(1630, 650);
