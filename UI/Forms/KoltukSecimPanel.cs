@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -12,9 +12,9 @@ namespace oceangate_r.UI.Forms
     /// Denizaltı Koltuk Seçim Paneli – 1+1 yatay düzen.
     ///
     /// Görsel düzen (soldan sağa):
-    ///   Üst sıra : koltuk 1, 3, 5, 7 … (tek numaralar)
+    ///   Üst sıra : koltuk 1, 3, 5, 7 ... (tek numaralar)
     ///   ─── KORİDOR ───────────────────────────────────────
-    ///   Alt sıra : koltuk 2, 4, 6, 8 … (çift numaralar)
+    ///   Alt sıra : koltuk 2, 4, 6, 8 ... (çift numaralar)
     ///
     /// Koltuklar soldan sağa sütun sütun ilerler.
     /// </summary>
@@ -145,15 +145,15 @@ namespace oceangate_r.UI.Forms
 
         // ── Koltuk Düzeni – 1+1 yatay ────────────────────────────────────────
         //
-        //  Üst sıra : koltuk 1, 3, 5, 7 … (indeks=0,2,4…  → No=1,3,5…)
+        //  Üst sıra : koltuk 1, 3, 5, 7 ... (indeks=0,2,4...  → No=1,3,5...)
         //  Koridor
-        //  Alt sıra : koltuk 2, 4, 6, 8 … (indeks=1,3,5…  → No=2,4,6…)
+        //  Alt sıra : koltuk 2, 4, 6, 8 ... (indeks=1,3,5...  → No=2,4,6...)
         //
         private void BuildKoltuklar(int kapasite)
         {
             // Koltukları iki gruba ayır
-            var ustSira = _koltuklar.Where(k => k.No % 2 == 1).ToList();  // 1,3,5,7…
-            var altSira = _koltuklar.Where(k => k.No % 2 == 0).ToList();  // 2,4,6,8…
+            var ustSira = _koltuklar.Where(k => k.No % 2 == 1).ToList();  // 1,3,5,7...
+            var altSira = _koltuklar.Where(k => k.No % 2 == 0).ToList();  // 2,4,6,8...
 
             int startY   = PadY + LejantH + 8;
             int ustSiraY = startY;

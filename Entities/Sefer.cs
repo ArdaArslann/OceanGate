@@ -4,7 +4,7 @@
     {
         public int Id { get; set; }
         public int BolgeId { get; set; }
-        public string BolgeAdi { get; set; }     // JOIN sonucu
+        public string BolgeAdi { get; set; }     
         public string KalkisSaati { get; set; }
         public int KapasiteSayisi { get; set; }
         public int SureDakika { get; set; }

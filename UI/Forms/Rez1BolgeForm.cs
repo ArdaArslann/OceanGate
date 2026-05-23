@@ -9,22 +9,22 @@ using oceangate_r.UI;
 namespace oceangate_r
 {
     /// <summary>
-    /// Rezervasyon Ad�m 1 � B�lge Se�imi.
-    /// Kullan�c� bir b�lge se�er ve �leri'ye basar; bu form gizlenir, Ad�m 2 a��l�r.
+    /// Rezervasyon Adım 1 - Bölge Seçimi.
+    /// Kullanıcı bir bölge se-er ve -leri'ye basar; bu form gizlenir, Adım 2 a--l-r.
     /// </summary>
     public partial class Rez1BolgeForm : Form
     {
-        private readonly Form _oncekiForm;   // Geri butonunda bu form g�sterilir (UserDashboard)
+        private readonly Form _oncekiForm;   // Geri butonunda bu form g-sterilir (UserDashboard)
 
         public Rez1BolgeForm(Form oncekiForm)
         {
             _oncekiForm = oncekiForm;
-            RezervasyonContext.Sifirla();     // Her yeni rezervasyonda s�f�rla
+            RezervasyonContext.Sifirla();     // Her yeni rezervasyonda s-f-rla
             InitializeComponent();
             BolgeleriYukle();
         }
 
-        // �� Veri Y�kleme �����������������������������������������������������
+        // -- Veri Yükleme -----------------------------------------------------
 
         private void BolgeleriYukle()
         {
@@ -33,13 +33,13 @@ namespace oceangate_r
                 listBoxBolgeler.Items.Add(b);
         }
 
-        // �� Olay ��leyicileri ������������������������������������������������
+        // -- Olay --leyicileri ------------------------------------------------
 
         private void btnIleri_Click(object sender, EventArgs e)
         {
             if (listBoxBolgeler.SelectedItem == null)
             {
-                MessageBox.Show("L�tfen bir b�lge se�iniz.", "Uyar�",
+                MessageBox.Show("Lütfen bir bölge seçiniz.", "Uyarı",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
@@ -76,7 +76,7 @@ namespace oceangate_r
 
             e.Graphics.DrawString(bolge.Ad, AppTheme.BodyBold,
                 new SolidBrush(AppTheme.TextLight), new Point(e.Bounds.Left + 20, e.Bounds.Top + 8));
-            e.Graphics.DrawString($"Derinlik: {bolge.Derinlik} m  �  {bolge.Aciklama}", AppTheme.SmallFont,
+            e.Graphics.DrawString($"Derinlik: {bolge.Derinlik} m  -  {bolge.Aciklama}", AppTheme.SmallFont,
                 new SolidBrush(AppTheme.TextMuted), new Point(e.Bounds.Left + 20, e.Bounds.Top + 34));
         }
     }

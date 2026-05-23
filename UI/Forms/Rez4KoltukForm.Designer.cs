@@ -11,7 +11,7 @@
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
+     
 
         private void InitializeComponent()
         {
@@ -25,9 +25,8 @@
             this.btnGeri = new System.Windows.Forms.Button();
             this.panelBaslik.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // panelBaslik
-            // 
+            
+             
             this.panelBaslik.BackColor = System.Drawing.Color.FromArgb(15, 23, 42);
             this.panelBaslik.Controls.Add(this.lblAdim);
             this.panelBaslik.Controls.Add(this.lblBaslik);
@@ -36,9 +35,7 @@
             this.panelBaslik.Name = "panelBaslik";
             this.panelBaslik.Size = new System.Drawing.Size(1050, 80);
             this.panelBaslik.TabIndex = 0;
-            // 
-            // lblAdim
-            // 
+          
             this.lblAdim.AutoSize = false;
             this.lblAdim.BackColor = System.Drawing.Color.Transparent;
             this.lblAdim.Font = new System.Drawing.Font("Segoe UI", 9F);
@@ -49,9 +46,7 @@
             this.lblAdim.TabIndex = 1;
             this.lblAdim.Text = "Adım 4 / 6";
             this.lblAdim.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblBaslik
-            // 
+          
             this.lblBaslik.AutoSize = false;
             this.lblBaslik.BackColor = System.Drawing.Color.Transparent;
             this.lblBaslik.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
@@ -61,9 +56,7 @@
             this.lblBaslik.Size = new System.Drawing.Size(400, 36);
             this.lblBaslik.TabIndex = 0;
             this.lblBaslik.Text = "Yeni Rezervasyon";
-            // 
-            // lblAltBaslik
-            // 
+         
             this.lblAltBaslik.AutoSize = false;
             this.lblAltBaslik.BackColor = System.Drawing.Color.Transparent;
             this.lblAltBaslik.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
@@ -72,10 +65,8 @@
             this.lblAltBaslik.Name = "lblAltBaslik";
             this.lblAltBaslik.Size = new System.Drawing.Size(600, 36);
             this.lblAltBaslik.TabIndex = 1;
-            this.lblAltBaslik.Text = "Koltuk Seçimi  (Maks 4 koltuk)";
-            // 
-            // lblSecimBilgi
-            // 
+            this.lblAltBaslik.Text = "Koltuk Seçimi  (Maksimum 4 koltuk)";
+         
             this.lblSecimBilgi.AutoSize = false;
             this.lblSecimBilgi.BackColor = System.Drawing.Color.Transparent;
             this.lblSecimBilgi.Font = new System.Drawing.Font("Segoe UI", 9F);
@@ -86,16 +77,12 @@
             this.lblSecimBilgi.TabIndex = 2;
             this.lblSecimBilgi.Text = "Seçilen koltuk sayısı: 0  (Maks 4)";
             this.lblSecimBilgi.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // koltukSecimPanel1
-            // 
+          
             this.koltukSecimPanel1.Location = new System.Drawing.Point(28, 142);
             this.koltukSecimPanel1.Name = "koltukSecimPanel1";
             this.koltukSecimPanel1.Size = new System.Drawing.Size(994, 432);
             this.koltukSecimPanel1.TabIndex = 3;
-            // 
-            // btnIleri
-            // 
+         
             this.btnIleri.BackColor = System.Drawing.Color.FromArgb(14, 165, 233);
             this.btnIleri.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnIleri.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -109,9 +96,7 @@
             this.btnIleri.UseVisualStyleBackColor = false;
             this.btnIleri.Click += new System.EventHandler(this.btnIleri_Click);
             this.btnIleri.FlatAppearance.BorderSize = 0;
-            // 
-            // btnGeri
-            // 
+        
             this.btnGeri.BackColor = System.Drawing.Color.FromArgb(30, 41, 59);
             this.btnGeri.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnGeri.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -125,9 +110,7 @@
             this.btnGeri.UseVisualStyleBackColor = false;
             this.btnGeri.Click += new System.EventHandler(this.btnGeri_Click);
             this.btnGeri.FlatAppearance.BorderSize = 0;
-            // 
-            // Rez4KoltukForm
-            // 
+         
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.MaximizeBox = false;
@@ -150,7 +133,7 @@
             this.ResumeLayout(false);
         }
 
-        #endregion
+    
 
         private System.Windows.Forms.Panel panelBaslik;
         private System.Windows.Forms.Label lblBaslik;

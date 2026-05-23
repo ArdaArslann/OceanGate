@@ -10,8 +10,8 @@ using oceangate_r.UI;
 namespace oceangate_r
 {
     /// <summary>
-    /// Rezervasyon Adım 6 ? Özet ve Onay.
-    /// RezervasyonContext'ten t?m verileri al?r, Özetler ve DB'ye kaydeder.
+    /// Rezervasyon Adım 6 ? ÖÖzet ve Onay.
+    /// RezervasyonContext'ten t?m verileri al?r, ÖÖzetler ve DB'ye kaydeder.
     /// </summary>
     public partial class Rez6OzetForm : Form
     {
@@ -21,12 +21,12 @@ namespace oceangate_r
         {
             _oncekiForm = oncekiForm;
             InitializeComponent();
-            OzetiDoldur();
+            OÖzetiDoldur();
         }
 
-        // ?? Özet Verilerini Doldur ????????????????????????????????????????????
+        // ?? ÖÖzet Verilerini Doldur ????????????????????????????????????????????
 
-        private void OzetiDoldur()
+        private void OÖzetiDoldur()
         {
             var bolge = RezervasyonContext.SeciliBolge;
             var sefer = RezervasyonContext.SeciliSefer;
@@ -62,6 +62,26 @@ namespace oceangate_r
         {
             var sefer  = RezervasyonContext.SeciliSefer;
             double top = sefer.FiyatKisiBasiTL * RezervasyonContext.KisiSayisi;
+            
+            // Bakiye kontrolü
+            double guncelBakiye = KullaniciDAL.BakiyeGetir(SessionManager.AktifKullanici.Id);
+            if (guncelBakiye < top)
+            {
+                MessageBox.Show($"Yetersiz bakiye!\n\nToplam Tutar: {top:N0} TL\nMevcut Bakiyeniz: {guncelBakiye:N0} TL\n\nLütfen Kullanıcı Paneli'nden bakiye yükleyiniz.", "Yetersiz Bakiye", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                
+                // Formları kapat ve UserDashboard'a dön
+                var rezForms = System.Windows.Forms.Application.OpenForms.Cast<System.Windows.Forms.Form>().Where(x => x.Name.StartsWith("Rez")).ToList();
+                foreach (var f in rezForms) f.Close();
+                
+                var ud = System.Windows.Forms.Application.OpenForms.OfType<UserDashboard>().FirstOrDefault();
+                ud?.Show();
+                return;
+            }
+
+            // Bakiyeden düş
+            KullaniciDAL.BakiyeDus(SessionManager.AktifKullanici.Id, top);
+            SessionManager.AktifKullanici.Bakiye = KullaniciDAL.BakiyeGetir(SessionManager.AktifKullanici.Id);
+
             string dNo = DatabaseManager.YeniDekontNo();
 
             var rez = new Rezervasyon
@@ -74,16 +94,13 @@ namespace oceangate_r
                 SeferTarihi       = RezervasyonContext.SeferTarihi,
                 Durum             = "Onaylandi",
                 DekontNo          = dNo,
-                SeferBilgisi      = $"{RezervasyonContext.SeciliBolge.Ad} ? {RezervasyonContext.SeciliSefer.KalkisSaati}",
+                SeferBilgisi      = $"{RezervasyonContext.SeciliBolge.Ad} - {RezervasyonContext.SeciliSefer.KalkisSaati}",
                 KullaniciAdi      = SessionManager.AktifKullanici.KullaniciAdi,
             };
 
-            RezervasyonDAL.Ekle(rez);
-
-            var yeniRez = RezervasyonDAL.KullanicininRezervasyonlari(SessionManager.AktifKullanici.Id);
-            if (yeniRez.Count > 0)
+            int rezId = RezervasyonDAL.Ekle(rez);
+            if (rezId > 0)
             {
-                int rezId = yeniRez[0].Id;
                 KoltukDAL.KoltuklariKaydet(
                     rezId,
                     RezervasyonContext.SeciliSefer.Id,
@@ -117,7 +134,7 @@ namespace oceangate_r
             {
                 if (f is UserDashboard dash)
                 {
-                    dash.Show();
+                    
                     break;
                 }
             }

@@ -6,13 +6,13 @@ namespace oceangate_r.Entities
     {
         public int Id { get; set; }
         public int RezervasyonId { get; set; }
-        public string DekontNo { get; set; }      // JOIN
+        public string DekontNo { get; set; }      
         public int KullaniciId { get; set; }
-        public string KullaniciAdi { get; set; }  // JOIN
-        public string TalepTipi { get; set; }     // 'Iptal', 'Degisiklik', 'Iade'
+        public string KullaniciAdi { get; set; }  
+        public string TalepTipi { get; set; }     
         public string Aciklama { get; set; }
         public DateTime TalepTarihi { get; set; }
-        public string Durum { get; set; }         // 'Bekliyor', 'Onaylandi', 'Reddedildi'
+        public string Durum { get; set; }       
         public string YeniSeferTarihi { get; set; }
 
         public string TalepTarihiStr => TalepTarihi.ToString("dd.MM.yyyy HH:mm");

@@ -1,15 +1,11 @@
-using System;
+﻿using System;
 using System.Data.SQLite;
 using System.IO;
-using System.Security.Cryptography;
-using System.Text;
+
 
 namespace oceangate_r.DAL
 {
-    /// <summary>
-    /// SQLite veritabanı bağlantısını ve tablo oluşturmayı yönetir.
-    /// Uygulama açılışında DatabaseManager.Initialize() çağrılmalıdır.
-    /// </summary>
+ 
     public static class DatabaseManager
     {
         private static string _dbPath;
@@ -46,7 +42,7 @@ CREATE TABLE IF NOT EXISTS Kullanicilar (
     Ad            TEXT    NOT NULL,
     Soyad         TEXT    NOT NULL,
     KullaniciAdi  TEXT    UNIQUE NOT NULL,
-    SifreHash     TEXT    NOT NULL,
+    Sifre     TEXT    NOT NULL,
     Rol           TEXT    NOT NULL DEFAULT 'kullanici',
     KayitTarihi   TEXT    NOT NULL
 );
@@ -78,7 +74,7 @@ CREATE TABLE IF NOT EXISTS Rezervasyonlar (
     ToplamTutar        REAL    NOT NULL,
     RezervasyonTarihi  TEXT    NOT NULL,
     SeferTarihi        TEXT    NOT NULL,
-    Durum              TEXT    NOT NULL DEFAULT 'Onaylandi',
+    Durum              TEXT    NOT NULL DEFAULT 'Onaylandıi',
     DekontNo           TEXT    UNIQUE NOT NULL,
     FOREIGN KEY (KullaniciId) REFERENCES Kullanicilar(Id),
     FOREIGN KEY (SeferId)     REFERENCES Seferler(Id)
@@ -125,14 +121,27 @@ CREATE TABLE IF NOT EXISTS RezervasyonOdalar (
 );";
                 Execute(conn, sql);
 
-                // Migration: mevcut DB'de SeferId / SeferTarihi kolonu yoksa ekle
+                // mevcut DBde SeferId / SeferTarihi kolonu yoksa ekle
                 MigrateRezervasyonOdalar(conn);
+                // Bakiye kolonu yoksa Kullanicilar tablosuna ekle
+                MigrateKullanicilarBakiye(conn);
             }
+        }
+
+        private static void MigrateKullanicilarBakiye(SQLiteConnection conn)
+        {
+            bool hasBakiye = false;
+            using (var cmd = new SQLiteCommand("PRAGMA table_info(Kullanicilar)", conn))
+            using (var r = cmd.ExecuteReader())
+                while (r.Read())
+                    if (r["name"].ToString() == "Bakiye") hasBakiye = true;
+
+            if (!hasBakiye)
+                Execute(conn, "ALTER TABLE Kullanicilar ADD COLUMN Bakiye REAL NOT NULL DEFAULT 0");
         }
 
         private static void MigrateRezervasyonOdalar(SQLiteConnection conn)
         {
-            // PRAGMA table_info ile kolon varlığını kontrol et
             bool hasSeferId     = false;
             bool hasSeferTarihi = false;
             using (var cmd = new SQLiteCommand("PRAGMA table_info(RezervasyonOdalar)", conn))
@@ -156,13 +165,13 @@ CREATE TABLE IF NOT EXISTS RezervasyonOdalar (
             {
                 conn.Open();
 
-                // Admin kullanıcısı
+                // Admin 
                 long adminSayisi = (long)Scalar(conn, "SELECT COUNT(*) FROM Kullanicilar WHERE Rol='admin'");
                 if (adminSayisi == 0)
                 {
                     Execute(conn,
-                        "INSERT INTO Kullanicilar (Ad, Soyad, KullaniciAdi, SifreHash, Rol, KayitTarihi) " +
-                        $"VALUES ('Admin', 'Oceangate', 'admin', '{HashSifre("admin123")}', 'admin', '{DateTime.Now:o}')");
+                        "INSERT INTO Kullanicilar (Ad, Soyad, KullaniciAdi, Sifre, Rol, KayitTarihi) " +
+                        $"VALUES ('Admin', 'Oceangate', 'admin', 'admin123', 'admin', '{DateTime.Now:o}')");
                 }
 
                 // Örnek bölgeler ve seferler
@@ -170,11 +179,11 @@ CREATE TABLE IF NOT EXISTS RezervasyonOdalar (
                 if (bolgeSayisi == 0)
                 {
                     string[][] bolgeler = {
-                        new[]{"Kizil Deniz Safari",       "Egzotik mercan resifleri ve tropikal baliklar",    "45"},
-                        new[]{"Atlantik Derin Su",        "Gizemli Atlantik okyanus dibi kesifi",             "320"},
-                        new[]{"Karayip Mercan Bahcesi",   "Renkli mercan bahceleri ve canlı deniz yasami",    "80"},
-                        new[]{"Pasifik Batik Kesfi",      "II. Dunya Savasi batiklari ve tarihi harabeler",   "150"},
-                        new[]{"Arktik Buz Alti",          "Buzul alti mistik dunya ve buz magaralari",        "200"},
+                        new[]{"Kızıl Deniz Safari",       "Egzotik mercan resifleri ve tropikal balıklar",    "45"},
+                        new[]{"Atlantik Derin Su",        "Gizemli Atlantik okyanus dibi keşifi",             "320"},
+                        new[]{"Karayip Mercan Bahçesi",   "Renkli mercan bahçeleri ve canlı deniz yaşamı",    "80"},
+                        new[]{"Pasifik Batık Keşfi",      "II. Dünya Savaşı batıkları ve tarihi harabeler",   "150"},
+                        new[]{"Arktik Buz Altı",          "Buzul altı mistik dünya ve buz mağaraları",        "200"},
                     };
 
                     foreach (var b in bolgeler)
@@ -206,11 +215,9 @@ CREATE TABLE IF NOT EXISTS RezervasyonOdalar (
                     }
                 }
 
-                // Otel odaları – sadece bir kez oluştur
                 long odaSayisi = (long)Scalar(conn, "SELECT COUNT(*) FROM OtelOdalar");
                 if (odaSayisi == 0)
                 {
-                    // 1 kişilik: 101-105, 2 kişilik: 201-205, 3 kişilik: 301-305, 4 kişilik: 401-405
                     for (int i = 1; i <= 5; i++)
                     {
                         Execute(conn, $"INSERT INTO OtelOdalar (OdaNo, Kapasite) VALUES ('10{i}', 1)");
@@ -222,7 +229,6 @@ CREATE TABLE IF NOT EXISTS RezervasyonOdalar (
             }
         }
 
-        // ── Yardımcı metotlar ────────────────────────────────────────────────
 
         private static void Execute(SQLiteConnection conn, string sql)
         {
@@ -236,14 +242,6 @@ CREATE TABLE IF NOT EXISTS RezervasyonOdalar (
                 return cmd.ExecuteScalar();
         }
 
-        public static string HashSifre(string sifre)
-        {
-            using (var sha = SHA256.Create())
-            {
-                byte[] bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(sifre));
-                return Convert.ToBase64String(bytes);
-            }
-        }
 
         public static string YeniDekontNo()
         {
@@ -252,3 +250,5 @@ CREATE TABLE IF NOT EXISTS RezervasyonOdalar (
         }
     }
 }
+
+

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
 using oceangate_r.DAL;
@@ -96,7 +96,7 @@ namespace oceangate_r
                     t.Id, t.RezervasyonId, t.DekontNo, t.KullaniciAdi,
                     tipGoster, t.Aciklama, t.TalepTarihiStr,
                     t.Durum == "Bekliyor"   ? "Bekliyor" :
-                    t.Durum == "Onaylandi"  ? "Onaylandı" : "Reddedildi");
+                    t.Durum == "Onaylandi"  ? "Onaylandıı" : "Reddedildi");
 
                 Color renk = t.Durum == "Bekliyor"  ? AppTheme.Warning :
                              t.Durum == "Onaylandi" ? AppTheme.Success : AppTheme.Danger;
@@ -127,10 +127,20 @@ namespace oceangate_r
 
             string tip   = _dgv.SelectedRows[0].Cells["Tip"].Value?.ToString() ?? "";
             int    rezId = Convert.ToInt32(_dgv.SelectedRows[0].Cells["RezId"].Value);
-            if (tip == "İptal ve İade")
-                RezervasyonDAL.DurumGuncelle(rezId, "Iptal");
+            
+            if (tip.Contains("İptal") || tip.Contains("İade") || tip.Contains("Iptal") || tip.Contains("İptal"))
+            {
+                var rez = RezervasyonDAL.Getir(rezId);
+                if (rez != null && rez.Durum != "Iptal")
+                {
+                    RezervasyonDAL.DurumGuncelle(rezId, "Iptal");
+                    KullaniciDAL.BakiyeYukle(rez.KullaniciId, rez.ToplamTutar);
+                }
+            }
             else
+            {
                 RezervasyonDAL.DurumGuncelle(rezId, "Onaylandi");
+            }
 
             MessageBox.Show("Talep onaylandı.", "Başarılı",
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -153,3 +163,4 @@ namespace oceangate_r
         }
     }
 }
+

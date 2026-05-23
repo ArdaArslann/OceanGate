@@ -6,7 +6,7 @@ namespace oceangate_r.Entities
     {
         public int Id { get; set; }
         public int KullaniciId { get; set; }
-        public string KullaniciAdi { get; set; }  // JOIN
+        public string KullaniciAdi { get; set; }  
         public int SeferId { get; set; }
         public string SeferBilgisi { get; set; }  // JOIN: BolgeAdi + KalkisSaati
         public int KisiSayisi { get; set; }

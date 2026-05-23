@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using oceangate_r.Core;
@@ -70,10 +70,10 @@ namespace oceangate_r
             e.Graphics.DrawString($"{sefer.KalkisSaati}", AppTheme.MedBold,
                 new SolidBrush(AppTheme.Accent), new Point(e.Bounds.Left + 16, e.Bounds.Top + 8));
             e.Graphics.DrawString(
-                $"Süre: {sefer.SureMetni}   |   Kapasite: {sefer.KapasiteSayisi} kiþi",
+                $"Süre: {sefer.SureMetni}   |   Kapasite: {sefer.KapasiteSayisi} kişi",
                 AppTheme.SmallFont, new SolidBrush(AppTheme.TextMuted),
                 new Point(e.Bounds.Left + 16, e.Bounds.Top + 34));
-            e.Graphics.DrawString($"{sefer.FiyatKisiBasiTL:N0} TL / kiþi", AppTheme.SubFont,
+            e.Graphics.DrawString($"{sefer.FiyatKisiBasiTL:N0} TL / kişi", AppTheme.SubFont,
                 new SolidBrush(AppTheme.Success),
                 new System.Drawing.RectangleF(e.Bounds.Right - 220, e.Bounds.Top + 16, 200, 40));
         }

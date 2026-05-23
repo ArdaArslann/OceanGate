@@ -4,11 +4,7 @@ using System.Windows.Forms;
 
 namespace oceangate_r.UI.Controls
 {
-    /// <summary>
-    /// Placeholder ve alt-çizgi efekti ile özel TextBox kontrolü.
-    /// Placeholder etiketi TextBox'ın üzerinde şeffaf olarak oturur;
-    /// tıklandığında veya textbox focus alınca otomatik gizlenir.
-    /// </summary>
+    
     public class OceanTextBox : UserControl
     {
         private readonly TextBox _tb;
@@ -57,7 +53,6 @@ namespace oceangate_r.UI.Controls
 
         public OceanTextBox()
         {
-            // ÖNEMLİ: _tb ve _placeholder, BackColor set edilmeden ÖNCE oluşturulmalı.
             _tb = new TextBox
             {
                 BorderStyle           = BorderStyle.None,
@@ -74,7 +69,7 @@ namespace oceangate_r.UI.Controls
                 ForeColor = AppTheme.TextMuted,
                 BackColor = Color.Transparent,
                 AutoSize  = false,
-                Cursor    = Cursors.IBeam,   // Kullanıcıya "buraya yazılır" sinyali
+                Cursor    = Cursors.IBeam,   
             };
 
             Height         = 44;
@@ -84,19 +79,18 @@ namespace oceangate_r.UI.Controls
             Controls.Add(_tb);
             Controls.Add(_placeholder);
 
-            // Placeholder tıklanınca TextBox'a focus ver
             _placeholder.Click += (s, e) => _tb.Focus();
 
             _tb.GotFocus  += (s, e) =>
             {
                 _isFocused = true;
-                _placeholder.Visible = false;          // Focus alınca gizle
+                _placeholder.Visible = false;          
                 Invalidate();
             };
             _tb.LostFocus += (s, e) =>
             {
                 _isFocused = false;
-                _placeholder.Visible = _tb.Text.Length == 0;  // Boşsa tekrar göster
+                _placeholder.Visible = _tb.Text.Length == 0;  
                 Invalidate();
             };
             _tb.TextChanged += (s, e) =>
@@ -115,9 +109,7 @@ namespace oceangate_r.UI.Controls
             _placeholder.Location = new Point(6, (Height - _placeholder.PreferredHeight) / 2 + 1);
             _placeholder.Size     = new Size(Width - 12, _placeholder.PreferredHeight + 4);
 
-            // Placeholder ETİKETİ üstte; tıklanınca focus devredilir
             _placeholder.BringToFront();
-            // NOT: _tb.BringToFront() ÇAĞIRILMAZ — placeholder görünür kalsın
         }
 
         protected override void OnPaint(PaintEventArgs e)

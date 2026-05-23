@@ -25,7 +25,7 @@
             this._lUyumsuz     = new System.Windows.Forms.Label();
             this._lSecili      = new System.Windows.Forms.Label();
 
-            // ── Başlık ───────────────────────────────────────────────────────
+            
             this._lblBaslik.Text      = "Otel Odası Seçimi";
             this._lblBaslik.Location  = new System.Drawing.Point(20, 16);
             this._lblBaslik.Size      = new System.Drawing.Size(960, 28);
@@ -33,7 +33,7 @@
             this._lblBaslik.ForeColor = System.Drawing.Color.FromArgb(248, 250, 252);
             this._lblBaslik.BackColor = System.Drawing.Color.Transparent;
 
-            // ── Lejant ───────────────────────────────────────────────────────
+            
             this._lejantPanel.Location  = new System.Drawing.Point(20, 52);
             this._lejantPanel.Size      = new System.Drawing.Size(960, 24);
             this._lejantPanel.BackColor = System.Drawing.Color.Transparent;
@@ -70,13 +70,13 @@
                 this._lBos, this._lDolu, this._lUyumsuz, this._lSecili
             });
 
-            // ── İçerik Alanı ─────────────────────────────────────────────────
+            
             this._contentPanel.Location   = new System.Drawing.Point(0, 84);
             this._contentPanel.Size       = new System.Drawing.Size(994, 380);
             this._contentPanel.BackColor  = System.Drawing.Color.Transparent;
             this._contentPanel.AutoScroll = true;
 
-            // ── UserControl Özellikleri ───────────────────────────────────────
+            
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             

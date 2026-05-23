@@ -9,9 +9,9 @@ using oceangate_r.UI;
 namespace oceangate_r
 {
     /// <summary>
-    /// Rezervasyon Ad�m 4 � Koltuk Se�imi.
-    /// KoltukSecimPanel bu form i�ine g�m�l�d�r.
-    /// Maksimum 4 koltuk se�ilebilir.
+    /// Rezervasyon Adım 4 - Koltuk Seçimi.
+    /// KoltukSecimPanel bu form i-ine g-m-l-d-r.
+    /// Maksimum 4 koltuk seçilebilir.
     /// </summary>
     public partial class Rez4KoltukForm : Form
     {
@@ -22,7 +22,7 @@ namespace oceangate_r
             _oncekiForm = oncekiForm;
             InitializeComponent();
 
-            // Koltuk panelini DB'den dolu koltuklar� �ekerek ba�lat
+            // Koltuk panelini DB'den dolu koltuklar- -ekerek ba-lat
             int kapasite     = RezervasyonContext.SeciliSefer?.KapasiteSayisi ?? 20;
             var doluAtamalar = KoltukDAL.DoluKoltuklariGetir(
                 RezervasyonContext.SeciliSefer.Id,
@@ -37,7 +37,7 @@ namespace oceangate_r
             koltukSecimPanel1.Baslat(kapasite, mevcutDurumlar);
             koltukSecimPanel1.SecimDegisti += seciliKoltuklar =>
             {
-                lblSecimBilgi.Text = $"Se�ilen koltuk say�s�: {seciliKoltuklar.Count}  (Maks 4)";
+                lblSecimBilgi.Text = $"Seçilen koltuk say-s-: {seciliKoltuklar.Count}  (Maks 4)";
             };
         }
 
@@ -46,7 +46,7 @@ namespace oceangate_r
             int secilen = koltukSecimPanel1.SeciliKoltuklar.Count;
             if (secilen == 0)
             {
-                MessageBox.Show("L�tfen en az 1 koltuk se�iniz.", "Koltuk Se�imi Eksik",
+                MessageBox.Show("Lütfen en az 1 koltuk seçiniz.", "Koltuk Seçimi Eksik",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }

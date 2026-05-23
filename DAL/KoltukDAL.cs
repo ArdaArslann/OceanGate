@@ -5,15 +5,9 @@ using oceangate_r.Entities;
 
 namespace oceangate_r.DAL
 {
-    /// <summary>
-    /// RezervasyonKoltuklar tablosu için veri erişim katmanı.
-    /// Bir rezervasyondaki her koltuğun numarasını ve cinsiyetini saklar/okur.
-    /// </summary>
     public static class KoltukDAL
     {
-        /// <summary>
-        /// Verilen rezervasyonun tüm koltuk atamalarını kaydeder.
-        /// </summary>
+        
         public static void KoltuklariKaydet(int rezervasyonId, int seferId,
             DateTime seferTarihi, List<KoltukAtama> atamalar)
         {
@@ -38,11 +32,7 @@ namespace oceangate_r.DAL
             }
         }
 
-        /// <summary>
-        /// Belirli bir sefer ve tarihe ait dolu koltukları döndürür.
-        /// Koltuk paneli yüklenirken mevcut doluluk durumunu göstermek için kullanılır.
-        /// İptal edilmiş rezervasyonlar hariç tutulur.
-        /// </summary>
+        
         public static List<KoltukAtama> DoluKoltuklariGetir(int seferId, DateTime seferTarihi)
         {
             var list = new List<KoltukAtama>();

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
 using oceangate_r.Entities;
@@ -9,13 +9,13 @@ namespace oceangate_r.DAL
     {
         private const string SelectJoin = @"
             SELECT r.*, k.KullaniciAdi,
-                   b.Ad || ' – ' || s.KalkisSaati AS SeferBilgisi
+                   b.Ad || ' - ' || s.KalkisSaati AS SeferBilgisi
             FROM   Rezervasyonlar r
             JOIN   Kullanicilar k ON r.KullaniciId = k.Id
             JOIN   Seferler     s ON r.SeferId     = s.Id
             JOIN   Bolgeler     b ON s.BolgeId     = b.Id";
 
-        public static void Ekle(Rezervasyon rv)
+        public static int Ekle(Rezervasyon rv)
         {
             using (var conn = new SQLiteConnection(DatabaseManager.ConnectionString))
             {
@@ -33,14 +33,23 @@ namespace oceangate_r.DAL
                     cmd.Parameters.AddWithValue("@starih", rv.SeferTarihi.ToString("o"));
                     cmd.Parameters.AddWithValue("@durum",  rv.Durum);
                     cmd.Parameters.AddWithValue("@dekont", rv.DekontNo);
-                    cmd.ExecuteNonQuery();
-                }
+                    cmd.ExecuteNonQuery(); 
+                    using (var cmd2 = new System.Data.SQLite.SQLiteCommand("SELECT last_insert_rowid()", conn)) { 
+                        return Convert.ToInt32(cmd2.ExecuteScalar()); 
+                    }
+                } 
             }
         }
 
         public static List<Rezervasyon> KullanicininRezervasyonlari(int kullaniciId)
         {
             return GetList("WHERE r.KullaniciId=@p ORDER BY r.RezervasyonTarihi DESC", kullaniciId);
+        }
+
+        public static Rezervasyon Getir(int id)
+        {
+            var l = GetList("WHERE r.Id=@p", id);
+            return l.Count > 0 ? l[0] : null;
         }
 
         public static List<Rezervasyon> Tumunu()
@@ -112,3 +121,4 @@ namespace oceangate_r.DAL
         };
     }
 }
+

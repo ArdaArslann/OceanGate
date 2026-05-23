@@ -11,7 +11,7 @@
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
+       
 
         private void InitializeComponent()
         {
@@ -26,9 +26,7 @@
             this.btnGeri = new System.Windows.Forms.Button();
             this.panelBaslik.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // panelBaslik
-            // 
+          
             this.panelBaslik.BackColor = System.Drawing.Color.FromArgb(15, 23, 42);
             this.panelBaslik.Controls.Add(this.lblAdim);
             this.panelBaslik.Controls.Add(this.lblBaslik);
@@ -37,9 +35,7 @@
             this.panelBaslik.Name = "panelBaslik";
             this.panelBaslik.Size = new System.Drawing.Size(1050, 80);
             this.panelBaslik.TabIndex = 0;
-            // 
-            // lblAdim
-            // 
+           
             this.lblAdim.AutoSize = false;
             this.lblAdim.BackColor = System.Drawing.Color.Transparent;
             this.lblAdim.Font = new System.Drawing.Font("Segoe UI", 9F);
@@ -50,9 +46,7 @@
             this.lblAdim.TabIndex = 1;
             this.lblAdim.Text = "Adım 3 / 6";
             this.lblAdim.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblBaslik
-            // 
+      
             this.lblBaslik.AutoSize = false;
             this.lblBaslik.BackColor = System.Drawing.Color.Transparent;
             this.lblBaslik.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
@@ -62,9 +56,7 @@
             this.lblBaslik.Size = new System.Drawing.Size(400, 36);
             this.lblBaslik.TabIndex = 0;
             this.lblBaslik.Text = "Yeni Rezervasyon";
-            // 
-            // lblAltBaslik
-            // 
+          
             this.lblAltBaslik.AutoSize = false;
             this.lblAltBaslik.BackColor = System.Drawing.Color.Transparent;
             this.lblAltBaslik.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
@@ -74,9 +66,7 @@
             this.lblAltBaslik.Size = new System.Drawing.Size(600, 36);
             this.lblAltBaslik.TabIndex = 1;
             this.lblAltBaslik.Text = "Tarih Seçimi";
-            // 
-            // lblTarihEtiketi
-            // 
+        
             this.lblTarihEtiketi.AutoSize = false;
             this.lblTarihEtiketi.BackColor = System.Drawing.Color.Transparent;
             this.lblTarihEtiketi.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
@@ -86,18 +76,14 @@
             this.lblTarihEtiketi.Size = new System.Drawing.Size(200, 24);
             this.lblTarihEtiketi.TabIndex = 2;
             this.lblTarihEtiketi.Text = "Sefer Tarihi";
-            // 
-            // dateTimePicker1
-            // 
+          
             this.dateTimePicker1.Font = new System.Drawing.Font("Segoe UI", 10F);
             this.dateTimePicker1.Format = System.Windows.Forms.DateTimePickerFormat.Long;
             this.dateTimePicker1.Location = new System.Drawing.Point(28, 184);
             this.dateTimePicker1.Name = "dateTimePicker1";
             this.dateTimePicker1.Size = new System.Drawing.Size(360, 36);
             this.dateTimePicker1.TabIndex = 3;
-            // 
-            // lblAciklama
-            // 
+        
             this.lblAciklama.AutoSize = false;
             this.lblAciklama.BackColor = System.Drawing.Color.Transparent;
             this.lblAciklama.Font = new System.Drawing.Font("Segoe UI", 9F);
@@ -107,9 +93,7 @@
             this.lblAciklama.Size = new System.Drawing.Size(600, 24);
             this.lblAciklama.TabIndex = 4;
             this.lblAciklama.Text = "Rezervasyon en az 1 gün öncesinden yapılabilir.";
-            // 
-            // btnIleri
-            // 
+           
             this.btnIleri.BackColor = System.Drawing.Color.FromArgb(14, 165, 233);
             this.btnIleri.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnIleri.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -123,9 +107,7 @@
             this.btnIleri.UseVisualStyleBackColor = false;
             this.btnIleri.Click += new System.EventHandler(this.btnIleri_Click);
             this.btnIleri.FlatAppearance.BorderSize = 0;
-            // 
-            // btnGeri
-            // 
+           
             this.btnGeri.BackColor = System.Drawing.Color.FromArgb(30, 41, 59);
             this.btnGeri.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnGeri.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -139,9 +121,7 @@
             this.btnGeri.UseVisualStyleBackColor = false;
             this.btnGeri.Click += new System.EventHandler(this.btnGeri_Click);
             this.btnGeri.FlatAppearance.BorderSize = 0;
-            // 
-            // Rez3TarihForm
-            // 
+            
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.MaximizeBox = false;
@@ -165,7 +145,7 @@
             this.ResumeLayout(false);
         }
 
-        #endregion
+       
 
         private System.Windows.Forms.Panel panelBaslik;
         private System.Windows.Forms.Label lblBaslik;

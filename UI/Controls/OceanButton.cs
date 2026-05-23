@@ -5,10 +5,7 @@ using System.Windows.Forms;
 
 namespace oceangate_r.UI.Controls
 {
-    /// <summary>
-    /// Flat, modern stilinde özel buton kontrolü.
-    /// Hover ve press animasyonları destekler.
-    /// </summary>
+    
     public class OceanButton : Button
     {
         private Color _normalColor;
@@ -89,9 +86,8 @@ namespace oceangate_r.UI.Controls
             var g = e.Graphics;
             g.SmoothingMode = SmoothingMode.AntiAlias;
 
-            // Ghosting (üst üste binme) hatasını kesin çözmek için arka planı manuel temizle
             Color parentColor = (Parent != null && Parent.BackColor != Color.Transparent) 
-                                ? Parent.BackColor : Color.FromArgb(15, 23, 42); // AppTheme.BgDark
+                                ? Parent.BackColor : Color.FromArgb(15, 23, 42); 
             g.Clear(parentColor);
 
             using (var path = RoundedRect(ClientRectangle, CornerRadius))
@@ -103,7 +99,7 @@ namespace oceangate_r.UI.Controls
                 }
             }
 
-            // Metin
+            
             var sf = new StringFormat
             {
                 Alignment     = StringAlignment.Center,

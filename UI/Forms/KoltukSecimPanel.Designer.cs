@@ -25,7 +25,6 @@
             this._lSecili     = new System.Windows.Forms.Label();
             this._lHover      = new System.Windows.Forms.Label();
 
-            // ── Lejant ───────────────────────────────────────────────────────
             this._lejantPanel.Location  = new System.Drawing.Point(20, 8);
             this._lejantPanel.Size      = new System.Drawing.Size(960, 28);
             this._lejantPanel.BackColor = System.Drawing.Color.Transparent;
@@ -69,13 +68,13 @@
                 this._lBos, this._lKadin, this._lErkek, this._lSecili, this._lHover
             });
 
-            // ── Koltuk Grid ──────────────────────────────────────────────────
+            
             this._koltukGrid.Location   = new System.Drawing.Point(20, 44);
             this._koltukGrid.Size       = new System.Drawing.Size(960, 370);
             this._koltukGrid.BackColor  = System.Drawing.Color.FromArgb(22, 33, 55);
             this._koltukGrid.AutoScroll = true;
 
-            // ── UserControl Özellikleri ───────────────────────────────────────
+    
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             

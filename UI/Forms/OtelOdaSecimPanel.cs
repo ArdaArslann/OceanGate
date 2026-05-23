@@ -13,18 +13,21 @@ namespace oceangate_r.UI.Forms
     ///
     /// KURAL:
     ///   Her oda seçiminden sonra "kalan kişi sayısı" güncellenir.
-    ///   Bir sonraki seçilebilir oda kapasitesi: 1 ≤ kapasite ≤ kalan kişi sayısı
+    ///   Normalde: kapasite ≤ kalan kişi sayısı olan odalar seçilebilir.
     ///
-    /// ÖRNEK (3 kişi):
-    ///   Başlangıç → kalan=3 → 1K, 2K, 3K seçilebilir; 4K kilitli (taşar)
-    ///   2K oda seçildi → kalan=1 → sadece 1K seçilebilir; 2K/3K/4K kilitli
-    ///   1K oda seçildi → kalan=0 → tüm odalar kilitli (tamamlandı)
+    ///   ÖZEL DURUM — Küçük oda yoksa büyük oda açılır:
+    ///   Eğer kalan kişi sayısına ≤ kapasiteli boş oda kalmadıysa,
+    ///   bir sonraki mevcut kapasitedeki odalar seçilebilir hale gelir
+    ///   (kullanıcının rezervasyonu tıkandığında ilerleyebilmesi için).
+    ///
+    /// ÖRNEK (1 kişi, 1K odalar dolu):
+    ///   Başlangıç → kalan=1, 1K oda boş yok → 2K odalar açılır
+    ///   2K oda seçildi → kalan=0 → tamamlandı
     ///
     /// REVIEWER:
-    ///   ✓ Taşma imkânsız — toplam kapasite asla kişi sayısını aşamaz
-    ///   ✓ Fazla büyük oda seçimi engellendi (3 kişiye 4K oda verilemez)
-    ///   ✓ Seçim iptalinde kapasite güncellenerek daha büyük odalar tekrar açılır
     ///   ✓ Dolu odalar (DB'de rezerve) her zaman kilitli
+    ///   ✓ Seçim iptalinde kapasite güncellenerek tekrar değerlendirme yapılır
+    ///   ✓ Eğer hiç boş oda yoksa uyarı mesajı gösterilir (Rez5OdaForm'da)
     /// </summary>
     public partial class OtelOdaSecimPanel : System.Windows.Forms.UserControl
     {
@@ -193,25 +196,43 @@ namespace oceangate_r.UI.Forms
         /// <summary>
         /// Seçim değiştiğinde hangi odaların seçilebileceğini günceller.
         ///
-        /// KURAL: Bir oda seçilebilir ↔
-        ///   (1) DB'de dolu değil          (Durum == Bos)
-        ///   (2) Zaten seçili değil        (seçiliyse kilitlenmez, iptal edebilsin)
-        ///   (3) Kapasitesi ≤ kalan kişi   (taşma önleme)
-        ///   (4) Kalan kişi > 0            (tamamlandıysa yeni seçim yok)
+        /// KURAL: Normalde kapasite ≤ kalan kişi sayısı olan odalar seçilebilir.
+        /// ÖZEL DURUM: Eğer bu kurala uyan boş oda yoksa,
+        ///             mevcut boş odalar arasındaki en küçük kapasiteli odalar da açılır.
+        ///             Bu, kullanıcının her zaman ilerleyebilmesini sağlar.
         /// </summary>
         private void GuncelleKisitlamalar()
         {
             int toplamSecili = _seciliOdalar.Sum(o => o.Kapasite);
             int kalan        = _kisiSayisi - toplamSecili;
 
-            // Durum etiketi güncelle
-            if (kalan == 0)
-                _lblDurum.Text      = $"✓  Tüm yolcular için oda seçildi! ({_kisiSayisi}/{_kisiSayisi} kişi)";
-            else if (kalan > 0)
-                _lblDurum.Text      = $"Seçildi: {toplamSecili}/{_kisiSayisi} kişilik  —  Kalan: {kalan} kişi için oda seçiniz";
-            _lblDurum.ForeColor = kalan == 0 ? AppTheme.Success : AppTheme.Accent;
+            // ── Özel Durum Tespiti ────────────────────────────────────────────
+            // Kalan kişi için ≤ kapasiteli boş oda var mı?
+            bool uygunBosOdaVar = _tumBtnler.Any(x =>
+                !_seciliOdalar.Any(s => s.Id == x.Oda.Id) &&   // seçili değil
+                x.Oda.Kapasite <= kalan);                       // sığıyor
 
-            // Her butonun Enabled durumunu güncelle
+            // Eğer uygun oda yoksa, mevcut boş odaların en küçük kapasitesini bul
+            int acilacakMinKap = int.MaxValue;
+            if (kalan > 0 && !uygunBosOdaVar)
+            {
+                foreach (var (b, o) in _tumBtnler)
+                    if (!_seciliOdalar.Any(s => s.Id == o.Id) && o.Kapasite < acilacakMinKap)
+                        acilacakMinKap = o.Kapasite;
+            }
+
+            // ── Durum etiketi ─────────────────────────────────────────────────
+            if (kalan == 0)
+                _lblDurum.Text = $"✓  Tüm yolcular için oda seçildi! ({_kisiSayisi}/{_kisiSayisi} kişi)";
+            else if (!uygunBosOdaVar && acilacakMinKap < int.MaxValue)
+                _lblDurum.Text = $"Kalan: {kalan} kişi  —  Tam kapasiteli oda kalmadı, en küçük mevcut oda ({acilacakMinKap}K) seçebilirsiniz";
+            else
+                _lblDurum.Text = $"Seçildi: {toplamSecili}/{_kisiSayisi} kişilik  —  Kalan: {kalan} kişi için oda seçiniz";
+            _lblDurum.ForeColor = kalan == 0 ? AppTheme.Success
+                                : (!uygunBosOdaVar && acilacakMinKap < int.MaxValue) ? AppTheme.Warning
+                                : AppTheme.Accent;
+
+            // ── Her butonun Enabled durumu ────────────────────────────────────
             foreach (var (btn, oda) in _tumBtnler)
             {
                 bool secilidirZaten = _seciliOdalar.Any(o => o.Id == oda.Id);
@@ -223,6 +244,7 @@ namespace oceangate_r.UI.Forms
                     btn.BackColor = RenkSecili;
                     btn.FlatAppearance.MouseOverBackColor = RenkSecili;
                     btn.ForeColor = AppTheme.TextLight;
+                    btn.Cursor    = Cursors.Hand;
                 }
                 else if (kalan == 0)
                 {
@@ -231,36 +253,64 @@ namespace oceangate_r.UI.Forms
                     btn.BackColor = RenkKilitli;
                     btn.ForeColor = RenkKilitliTxt;
                     btn.Cursor    = Cursors.Default;
-                }
-                else if (oda.Kapasite > kalan)
-                {
-                    // Bu oda kapasitesi kalan kişiyi aşıyor — taşma olur, yasak
-                    btn.Enabled   = false;
-                    btn.BackColor = RenkKilitli;
-                    btn.ForeColor = RenkKilitliTxt;
-                    btn.Cursor    = Cursors.Default;
                     btn.FlatAppearance.MouseOverBackColor = RenkKilitli;
+                }
+                else if (uygunBosOdaVar)
+                {
+                    // Normal senaryo: kapasitesi ≤ kalan olan odalar açık
+                    if (oda.Kapasite <= kalan)
+                    {
+                        btn.Enabled   = true;
+                        btn.BackColor = RenkBos;
+                        btn.ForeColor = AppTheme.TextLight;
+                        btn.Cursor    = Cursors.Hand;
+                        btn.FlatAppearance.MouseOverBackColor = RenkBosAktif;
+                    }
+                    else
+                    {
+                        btn.Enabled   = false;
+                        btn.BackColor = RenkKilitli;
+                        btn.ForeColor = RenkKilitliTxt;
+                        btn.Cursor    = Cursors.Default;
+                        btn.FlatAppearance.MouseOverBackColor = RenkKilitli;
+                    }
                 }
                 else
                 {
-                    // Seçilebilir
-                    btn.Enabled   = true;
-                    btn.BackColor = RenkBos;
-                    btn.ForeColor = AppTheme.TextLight;
-                    btn.Cursor    = Cursors.Hand;
-                    btn.FlatAppearance.MouseOverBackColor = RenkBosAktif;
+                    // Özel senaryo: uygun boyutta boş oda yok
+                    // Sadece en küçük mevcut kapasiteli odaları aç
+                    if (oda.Kapasite == acilacakMinKap)
+                    {
+                        btn.Enabled   = true;
+                        btn.BackColor = RenkBos;
+                        btn.ForeColor = AppTheme.TextLight;
+                        btn.Cursor    = Cursors.Hand;
+                        btn.FlatAppearance.MouseOverBackColor = RenkBosAktif;
+                    }
+                    else
+                    {
+                        btn.Enabled   = false;
+                        btn.BackColor = RenkKilitli;
+                        btn.ForeColor = RenkKilitliTxt;
+                        btn.Cursor    = Cursors.Default;
+                        btn.FlatAppearance.MouseOverBackColor = RenkKilitli;
+                    }
                 }
             }
 
-            // Grup başlıklarını güncelle: kalan kişi için seçilebilir grup = aktif renk
+            // ── Grup başlıklarını güncelle ────────────────────────────────────
             foreach (Control c in Controls)
             {
                 if (c is Label lbl && lbl.Tag is string tag && tag.StartsWith("grup"))
                 {
                     if (int.TryParse(tag.Replace("grup", ""), out int grupKap))
                     {
-                        bool secilecek = kalan > 0 && grupKap <= kalan;
-                        lbl.ForeColor = secilecek ? AppTheme.Accent : AppTheme.TextDim;
+                        bool secilecek;
+                        if (uygunBosOdaVar)
+                            secilecek = kalan > 0 && grupKap <= kalan;
+                        else
+                            secilecek = kalan > 0 && grupKap == acilacakMinKap;
+                        lbl.ForeColor = secilecek ? AppTheme.Warning : AppTheme.TextDim;
                     }
                 }
             }

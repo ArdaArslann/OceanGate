@@ -19,6 +19,15 @@ namespace oceangate_r
                 new System.Globalization.CultureInfo("tr-TR");
 
             Application.EnableVisualStyles();
+            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+            Application.ThreadException += (s, e) => {
+                System.IO.File.WriteAllText(@"c:\Users\Arda\source\repos\oceangate_r\crash.txt", e.Exception.ToString());
+                MessageBox.Show("Hata: " + e.Exception.Message);
+            };
+            AppDomain.CurrentDomain.UnhandledException += (s, e) => {
+                System.IO.File.WriteAllText(@"c:\Users\Arda\source\repos\oceangate_r\crash2.txt", e.ExceptionObject.ToString());
+                MessageBox.Show("Hata: " + e.ExceptionObject.ToString());
+            };
             Application.SetCompatibleTextRenderingDefault(false);
 
             // Veritabanını başlat (tablolar + seed data)

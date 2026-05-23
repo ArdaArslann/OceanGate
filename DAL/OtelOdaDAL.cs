@@ -5,20 +5,10 @@ using oceangate_r.Entities;
 
 namespace oceangate_r.DAL
 {
-    /// <summary>
-    /// OtelOdalar ve RezervasyonOdalar tabloları için veri erişim katmanı.
-    ///
-    /// ÖNEMLİ MİMARİ KARAR:
-    /// Otel odaları sefer+tarih bazında bağımsız takip edilir.
-    /// Karayip seferinde 401 nolu oda doluysa Baltık seferinde 401 boş olabilir.
-    /// RezervasyonOdalar.SeferId + SeferTarihi bunu sağlar.
-    /// </summary>
+  
     public static class OtelOdaDAL
     {
-        /// <summary>
-        /// Belirli bir sefer ve tarih için tüm aktif otel odalarını getirir.
-        /// Sadece O sefere+tarihe ait rezervasyonlar dikkate alınır.
-        /// </summary>
+      
         public static List<OtelOda> TumOdalariGetir(int seferId, DateTime seferTarihi)
         {
             var list = new List<OtelOda>();
@@ -67,9 +57,7 @@ namespace oceangate_r.DAL
             return list;
         }
 
-        /// <summary>
-        /// Seçilen odayı rezervasyona ve ilgili sefer+tarihe bağlar.
-        /// </summary>
+       
         public static void OdaKaydet(int rezervasyonId, int otelOdaId,
                                      int seferId, DateTime seferTarihi)
         {
@@ -93,9 +81,6 @@ namespace oceangate_r.DAL
             }
         }
 
-        /// <summary>
-        /// Rezervasyona bağlı odaları getirir (özet paneli için).
-        /// </summary>
         public static List<OtelOda> RezervasyonunOdalari(int rezervasyonId)
         {
             var list = new List<OtelOda>();
@@ -126,9 +111,7 @@ namespace oceangate_r.DAL
             return list;
         }
 
-        /// <summary>
-        /// Belirli sefer+tarih için boş kalan toplam oda kapasitesini döner.
-        /// </summary>
+      
         public static int ToplamBosKapasite(int seferId, DateTime seferTarihi)
         {
             int toplam = 0;

@@ -116,7 +116,7 @@
                 this._lblFeat1, this._lblFeat2, this._lblFeat3, this._lblFeat4
             });
 
-            // ── SAĞ PANEL ────────────────────────────────────────────────────
+            
             this._rightPanel.Location  = new System.Drawing.Point(390, 0);
             this._rightPanel.Size      = new System.Drawing.Size(610, 505);
             this._rightPanel.BackColor = System.Drawing.Color.FromArgb(22, 33, 55);
@@ -157,7 +157,7 @@
                 this._btnToggleLogin, this._btnToggleRegister
             });
 
-            // ── GİRİŞ PANELİ ─────────────────────────────────────────────────
+            
             this._loginPanel.Location  = new System.Drawing.Point(0, 175);
             this._loginPanel.Size      = new System.Drawing.Size(610, 330);
             this._loginPanel.BackColor = System.Drawing.Color.Transparent;
@@ -198,7 +198,7 @@
                 this._lblLoginError, this._lblDemo
             });
 
-            // ── KAYIT PANELİ ──────────────────────────────────────────────────
+            
             this._registerPanel.Location  = new System.Drawing.Point(0, 175);
             this._registerPanel.Size      = new System.Drawing.Size(610, 330);
             this._registerPanel.BackColor = System.Drawing.Color.Transparent;
@@ -247,7 +247,7 @@
                 this._loginPanel, this._registerPanel
             });
 
-            // ── Form Özellikleri ──────────────────────────────────────────────
+            
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.MaximizeBox = false;

@@ -11,13 +11,13 @@ namespace oceangate_r
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
+        
 
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
 
-            // ── Başlık ────────────────────────────────────────────────────────
+            
             this.lblHeader = new System.Windows.Forms.Label();
             this.lblHeader.Text      = "Talep Yönetimi";
             this.lblHeader.Location  = new System.Drawing.Point(24, 22);
@@ -32,7 +32,7 @@ namespace oceangate_r
             this.lblSub.ForeColor = System.Drawing.Color.FromArgb(100, 116, 139);
             this.lblSub.Font      = new System.Drawing.Font("Segoe UI", 9.5F);
 
-            // ── Sekme Butonları ───────────────────────────────────────────────
+            
             this._btnTabTumu = new oceangate_r.UI.Controls.OceanButton();
             this._btnTabTumu.Text     = "Tümü";
             this._btnTabTumu.Location = new System.Drawing.Point(24, 100);
@@ -44,7 +44,7 @@ namespace oceangate_r
             this._btnTabBekleyen.Size     = new System.Drawing.Size(160, 36);
 
 
-            // ── DataGridView ──────────────────────────────────────────────────
+            
             this._dgv = new System.Windows.Forms.DataGridView();
             this._dgv.Location        = new System.Drawing.Point(24, 150);
             this._dgv.Size            = new System.Drawing.Size(1110, 330);
@@ -65,7 +65,7 @@ namespace oceangate_r
             this._dgv.DefaultCellStyle.ForeColor = System.Drawing.Color.FromArgb(248, 250, 252);
             this._dgv.Font            = new System.Drawing.Font("Segoe UI", 9.5F);
 
-            // ── Aksiyon Çubuğu ────────────────────────────────────────────────
+             
             this._actionBar = new System.Windows.Forms.Panel();
             this._actionBar.Location  = new System.Drawing.Point(24, 492);
             this._actionBar.Size      = new System.Drawing.Size(1110, 70);
@@ -97,7 +97,7 @@ namespace oceangate_r
                 this._btnOnayla, this._btnReddet, this.lblHint
             });
 
-            // ── Form Özellikleri ──────────────────────────────────────────────
+            
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.MaximizeBox = false;
@@ -121,7 +121,7 @@ namespace oceangate_r
             this.ResumeLayout(false);
         }
 
-        #endregion
+       
 
         private System.Windows.Forms.Label lblHeader;
         private System.Windows.Forms.Label lblSub;

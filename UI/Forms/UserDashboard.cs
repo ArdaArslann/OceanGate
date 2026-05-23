@@ -22,6 +22,7 @@ namespace oceangate_r
             string tamAd = SessionManager.AktifKullanici?.TamAd ?? "";
             _lblUserName.Text     = tamAd;
             _lblUserFullName.Text = tamAd;
+            BakiyeGuncelle();
 
             // Event bağlamaları
             _btnCikis.Click    += (s, e) => Close();
@@ -29,6 +30,16 @@ namespace oceangate_r
             _btnMenuAnaSayfa.Click += (s, e) => { SetActiveMenu(_btnMenuAnaSayfa); ShowAnaSayfa(); };
             _btnMenuYeniRez.Click  += (s, e) => { SetActiveMenu(_btnMenuYeniRez);  ShowYeniRezervason(); };
             _btnMenuRezlerim.Click += (s, e) => { SetActiveMenu(_btnMenuRezlerim); ShowRezervasyonlarim(); };
+            
+            _btnBakiyeYukle.Click += (s, e) => {
+                using (var frm = new oceangate_r.UI.Forms.BakiyeYukleForm())
+                {
+                    if (frm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                    {
+                        BakiyeGuncelle();
+                    }
+                }
+            };
 
             _titleBar.Paint += (s, e) =>
             {
@@ -54,6 +65,21 @@ namespace oceangate_r
         //  İçerik Sayfaları
         // ════════════════════════════════════════════════════════════════════
 
+        
+        public void Yenile() { this.Invoke((System.Windows.Forms.MethodInvoker)delegate { BakiyeGuncelle(); SetActiveMenu(_btnMenuRezlerim); ShowRezervasyonlarim(); this.Refresh(); }); }
+        private void BakiyeGuncelle()
+        {
+            if (SessionManager.AktifKullanici != null)
+            {
+                double bakiye = KullaniciDAL.BakiyeGetir(SessionManager.AktifKullanici.Id);
+                SessionManager.AktifKullanici.Bakiye = bakiye;
+                if (_lblBakiye != null)
+                {
+                    _lblBakiye.Text = $"Bakiye: {bakiye:N2} TL";
+                }
+            }
+        }
+        
         private void ShowAnaSayfa()
         {
             _contentArea.Controls.Clear();
@@ -132,11 +158,16 @@ namespace oceangate_r
             _contentArea.Controls.Add(dgv);
         }
 
+        private void _btnMenuYeniRez_Click(object sender, EventArgs e) {}
         private void ShowYeniRezervason()
         {
             var form1 = new Rez1BolgeForm(this);
-            form1.FormClosed += (s, e) => { if (!this.Visible) this.Show(); };
-            Hide();
+            form1.FormClosed += (s, e) => { 
+                this.Show(); 
+                BakiyeGuncelle();
+                SetActiveMenu(_btnMenuRezlerim);
+                ShowRezervasyonlarim();
+            };
             form1.Show();
         }
 
@@ -178,7 +209,7 @@ namespace oceangate_r
             var btnDetay = UIHelper.MakeButton("Detay / Talep Oluştur", 24, H - TH - 62, 260, 44);
             btnDetay.Click += (s, e) =>
             {
-                if (dgv.SelectedRows.Count == 0) return;
+                if (dgv.SelectedRows.Count == 0) { MessageBox.Show("Lütfen detaylarını görmek istediğiniz rezervasyonu tablodan seçiniz.", "Uyarı", MessageBoxButtons.OK, MessageBoxIcon.Information); return; }
                 int rezId = Convert.ToInt32(dgv.SelectedRows[0].Cells["Id"].Value);
                 var secili = rezervasyonlar.Find(x => x.Id == rezId);
                 if (secili == null) return;

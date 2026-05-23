@@ -2,9 +2,7 @@
 
 namespace oceangate_r
 {
-    /// <summary>
-    /// Oturum açmış kullanıcı bilgisini uygulama boyunca tutan statik sınıf.
-    /// </summary>
+
     public static class SessionManager
     {
         public static Kullanici AktifKullanici { get; private set; }
