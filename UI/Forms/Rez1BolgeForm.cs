@@ -8,23 +8,19 @@ using oceangate_r.UI;
 
 namespace oceangate_r
 {
-    /// <summary>
-    /// Rezervasyon Adım 1 - Bölge Seçimi.
-    /// Kullanıcı bir bölge se-er ve -leri'ye basar; bu form gizlenir, Adım 2 a--l-r.
-    /// </summary>
+
     public partial class Rez1BolgeForm : Form
     {
-        private readonly Form _oncekiForm;   // Geri butonunda bu form g-sterilir (UserDashboard)
+        private readonly Form _oncekiForm;   
 
         public Rez1BolgeForm(Form oncekiForm)
         {
             _oncekiForm = oncekiForm;
-            RezervasyonContext.Sifirla();     // Her yeni rezervasyonda s-f-rla
+            RezervasyonContext.Sifirla();     
             InitializeComponent();
             BolgeleriYukle();
         }
 
-        // -- Veri Yükleme -----------------------------------------------------
 
         private void BolgeleriYukle()
         {
@@ -33,7 +29,6 @@ namespace oceangate_r
                 listBoxBolgeler.Items.Add(b);
         }
 
-        // -- Olay --leyicileri ------------------------------------------------
 
         private void btnIleri_Click(object sender, EventArgs e)
         {
@@ -78,6 +73,11 @@ namespace oceangate_r
                 new SolidBrush(AppTheme.TextLight), new Point(e.Bounds.Left + 20, e.Bounds.Top + 8));
             e.Graphics.DrawString($"Derinlik: {bolge.Derinlik} m  -  {bolge.Aciklama}", AppTheme.SmallFont,
                 new SolidBrush(AppTheme.TextMuted), new Point(e.Bounds.Left + 20, e.Bounds.Top + 34));
+        }
+
+        private void lblAltBaslik_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

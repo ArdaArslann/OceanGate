@@ -97,22 +97,24 @@
             this._lblAvatar.BackColor = System.Drawing.Color.Transparent;
             this._lblAvatar.Font = new System.Drawing.Font("Segoe UI", 22F);
             this._lblAvatar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(158)))), ((int)(((byte)(11)))));
-            this._lblAvatar.Location = new System.Drawing.Point(76, 13);
+            this._lblAvatar.Location = new System.Drawing.Point(94, 13);
             this._lblAvatar.Name = "_lblAvatar";
             this._lblAvatar.Size = new System.Drawing.Size(240, 48);
             this._lblAvatar.TabIndex = 0;
             this._lblAvatar.Text = "👤";
+            this._lblAvatar.Click += new System.EventHandler(this._lblAvatar_Click);
             // 
             // _lblRole
             // 
             this._lblRole.BackColor = System.Drawing.Color.Transparent;
             this._lblRole.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold);
             this._lblRole.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(158)))), ((int)(((byte)(11)))));
-            this._lblRole.Location = new System.Drawing.Point(76, 65);
+            this._lblRole.Location = new System.Drawing.Point(94, 65);
             this._lblRole.Name = "_lblRole";
             this._lblRole.Size = new System.Drawing.Size(240, 24);
             this._lblRole.TabIndex = 1;
             this._lblRole.Text = "YÖNETİCİ";
+            this._lblRole.Click += new System.EventHandler(this._lblRole_Click);
             // 
             // _btnMenuGenel
             // 

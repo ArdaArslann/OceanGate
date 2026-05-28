@@ -84,6 +84,11 @@ namespace oceangate_r.UI.Forms
                 MessageBox.Show("Bakiye yüklenirken bir hata oluştu: " + ex.Message, "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        private void _txtCVC_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
 

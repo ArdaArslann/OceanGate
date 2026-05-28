@@ -7,9 +7,7 @@ using oceangate_r.UI.Controls;
 
 namespace oceangate_r
 {
-    /// <summary>
-    /// Yönetici ana paneli. Sol menü + sekmeli yönetim alanları.
-    /// </summary>
+    
     public partial class AdminDashboard : Form
     {
         private const int W = 1360, H = 820, TH = 50, SW = 240;
@@ -20,14 +18,12 @@ namespace oceangate_r
             UIHelper.EnableDrag(_titleBar, this);
             _lblAdminTag.Text = SessionManager.AktifKullanici?.TamAd ?? "Admin";
 
-            // Buton metinleri (Designer'dan eksik kaldı)
             _btnMenuGenel.Text = "  📊  Genel Bakış";
             _btnMenuBolge.Text = "  🗺️  Bölgeler";
             _btnMenuSefer.Text = "  🚢  Seferler";
             _btnMenuTalep.Text = "  📋  Talepler";
             _btnCikis.Text     = "  🚪  Çıkış Yap";
 
-            // Event bağlamaları
             _btnCikis.Click    += (s, e) => Close();
 
             _btnMenuGenel.Click += (s, e) => { SetActiveMenu(_btnMenuGenel); ShowGenel(); };
@@ -56,10 +52,7 @@ namespace oceangate_r
             get { var cp = base.CreateParams; cp.ClassStyle |= 0x20000; return cp; }
         }
 
-        // ════════════════════════════════════════════════════════════════════
-        //  Sayfa Yükleyiciler
-        // ════════════════════════════════════════════════════════════════════
-
+     
         private void ShowGenel()
         {
             _contentArea.Controls.Clear();
@@ -126,11 +119,20 @@ namespace oceangate_r
         private void ShowBolge()  { LoadSubForm(new BolgeYonetimForm()); }
         private void ShowSefer()  { LoadSubForm(new SeferYonetimForm()); }
 
+        private void _lblAvatar_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void _lblRole_Click(object sender, EventArgs e)
+        {
+
+        }
+
         private void ShowTalep()  { LoadSubForm(new TalepYonetimForm()); }
 
         private void LoadSubForm(Form form)
         {
-            // Gerçek pencere olarak aç — kendi başlık çubuğu ve X butonu ile
             form.Owner           = this;
             form.StartPosition   = FormStartPosition.CenterParent;
             form.FormBorderStyle = FormBorderStyle.FixedSingle;
@@ -141,9 +143,6 @@ namespace oceangate_r
             form.Show(this);
         }
 
-        // ════════════════════════════════════════════════════════════════════
-        //  Yardımcı
-        // ════════════════════════════════════════════════════════════════════
 
         private void SetActiveMenu(Button btn)
         {

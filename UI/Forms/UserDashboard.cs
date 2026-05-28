@@ -8,9 +8,7 @@ using oceangate_r.UI.Controls;
 
 namespace oceangate_r
 {
-    /// <summary>
-    /// Kullanıcı ana paneli. Sol menü ile içerik alanı arasında geçiş sağlar.
-    /// </summary>
+   
     public partial class UserDashboard : Form
     {
         private const int W = 1280, H = 780, TH = 50, SW = 230;
@@ -25,7 +23,7 @@ namespace oceangate_r
             _lblUserFullName.Text = tamAd;
             BakiyeGuncelle();
 
-            // Event bağlamaları
+            
             _btnCikis.Click    += (s, e) => Close();
 
             _btnMenuAnaSayfa.Click += (s, e) => { SetActiveMenu(_btnMenuAnaSayfa); ShowAnaSayfa(); };
@@ -62,10 +60,7 @@ namespace oceangate_r
             get { var cp = base.CreateParams; cp.ClassStyle |= 0x20000; return cp; }
         }
 
-        // ════════════════════════════════════════════════════════════════════
-        //  İçerik Sayfaları
-        // ════════════════════════════════════════════════════════════════════
-
+      
         
         public void Yenile() { this.Invoke((System.Windows.Forms.MethodInvoker)delegate { BakiyeGuncelle(); SetActiveMenu(_btnMenuRezlerim); ShowRezervasyonlarim(); this.Refresh(); }); }
         private void BakiyeGuncelle()
@@ -160,6 +155,12 @@ namespace oceangate_r
         }
 
         private void _btnMenuYeniRez_Click(object sender, EventArgs e) {}
+
+        private void _btnBakiyeYukle_Click(object sender, EventArgs e)
+        {
+
+        }
+
         private void ShowYeniRezervason()
         {
             var form1 = new Rez1BolgeForm(this);
@@ -229,10 +230,7 @@ namespace oceangate_r
             _contentArea.Controls.AddRange(new Control[] { dgv, btnDetay });
         }
 
-        // ════════════════════════════════════════════════════════════════════
-        //  Yardımcı
-        // ════════════════════════════════════════════════════════════════════
-
+    
         private void SetActiveMenu(Button btn)
         {
             if (_activeMenu != null)

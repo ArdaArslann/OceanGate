@@ -8,7 +8,6 @@ using oceangate_r.UI.Controls;
 
 namespace oceangate_r
 {
-    /// <summary>Admin – Kullanıcı talep yönetim formu (Onayla / Reddet).</summary>
     public partial class TalepYonetimForm : Form
     {
         private int _seciliId = -1;
@@ -78,7 +77,7 @@ namespace oceangate_r
 
         private void YukleVeriler(bool sadeceBekleyen = false)
         {
-            _dgv.SelectionChanged -= DgvSelectionChanged; // Eklerken eventi tetikleme
+            _dgv.SelectionChanged -= DgvSelectionChanged; 
             _dgv.Rows.Clear();
             var list = sadeceBekleyen ? TalepDAL.Bekleyenler() : TalepDAL.Tumunu();
 
@@ -103,11 +102,11 @@ namespace oceangate_r
                 _dgv.Rows[idx].DefaultCellStyle.ForeColor = renk;
             }
 
-            _dgv.ClearSelection(); // Seçimi temizle
+            _dgv.ClearSelection(); 
             _seciliId = -1;
             _btnOnayla.Enabled = false;
             _btnReddet.Enabled = false;
-            _dgv.SelectionChanged += DgvSelectionChanged; // Eventi tekrar bağla
+            _dgv.SelectionChanged += DgvSelectionChanged; 
         }
 
         private void DgvSelectionChanged(object sender, EventArgs e)
@@ -128,7 +127,7 @@ namespace oceangate_r
             string tip   = _dgv.SelectedRows[0].Cells["Tip"].Value?.ToString() ?? "";
             int    rezId = Convert.ToInt32(_dgv.SelectedRows[0].Cells["RezId"].Value);
             
-            if (tip.Contains("İptal") || tip.Contains("İade") || tip.Contains("Iptal") || tip.Contains("İptal"))
+            if (tip.Contains("İptal") || tip.Contains("İade") || tip.Contains("Iptal"))
             {
                 var rez = RezervasyonDAL.Getir(rezId);
                 if (rez != null && rez.Durum != "Iptal")
@@ -136,6 +135,17 @@ namespace oceangate_r
                     RezervasyonDAL.DurumGuncelle(rezId, "Iptal");
                     KullaniciDAL.BakiyeYukle(rez.KullaniciId, rez.ToplamTutar);
                 }
+            }
+            else if (tip.Contains("Tarih Değişikliği") || tip.Contains("Degisiklik"))
+            {
+                var talepler = TalepDAL.Tumunu();
+                var talep    = talepler.Find(t => t.Id == _seciliId);
+                if (talep != null && !string.IsNullOrEmpty(talep.YeniSeferTarihi))
+                {
+                    if (DateTime.TryParse(talep.YeniSeferTarihi, out DateTime yeniTarih))
+                        RezervasyonDAL.SeferTarihiGuncelle(rezId, yeniTarih);
+                }
+                RezervasyonDAL.DurumGuncelle(rezId, "Onaylandi");
             }
             else
             {
@@ -154,12 +164,16 @@ namespace oceangate_r
 
             string tip   = _dgv.SelectedRows[0].Cells["Tip"].Value?.ToString() ?? "";
             int    rezId = Convert.ToInt32(_dgv.SelectedRows[0].Cells["RezId"].Value);
-            // Talep reddedildiğinde, talep türü ne olursa olsun rezervasyon mevcut onaylı statüsüne döner
             RezervasyonDAL.DurumGuncelle(rezId, "Onaylandi");
 
             MessageBox.Show("Talep reddedildi.", "Reddedildi",
                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
             YukleVeriler(false);
+        }
+
+        private void _btnOnayla_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

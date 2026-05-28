@@ -8,7 +8,6 @@ using oceangate_r.UI.Controls;
 
 namespace oceangate_r
 {
-    /// <summary>Admin – Bölge CRUD yönetim formu.</summary>
     public partial class BolgeYonetimForm : Form
     {
         private int _seciliId = -1;
@@ -132,6 +131,11 @@ namespace oceangate_r
                 BolgeDAL.Sil(_seciliId);
                 YukleVeriler();
             }
+        }
+
+        private void _btnSil_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

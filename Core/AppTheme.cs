@@ -2,9 +2,7 @@
 
 namespace oceangate_r
 {
-    /// <summary>
-    /// Uygulamanın tüm renk, font ve stil sabitlerini barındıran merkezi tema sınıfı.
-    /// </summary>
+  
     public static class AppTheme
     {
         //Arka Plan Renkleri

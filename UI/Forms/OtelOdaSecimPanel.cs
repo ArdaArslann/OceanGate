@@ -8,30 +8,9 @@ using oceangate_r.Entities;
 
 namespace oceangate_r.UI.Forms
 {
-    /// <summary>
-    /// Otel Odası Seçim Paneli — Dinamik Kısıtlama Mantığı
-    ///
-    /// KURAL:
-    ///   Her oda seçiminden sonra "kalan kişi sayısı" güncellenir.
-    ///   Normalde: kapasite ≤ kalan kişi sayısı olan odalar seçilebilir.
-    ///
-    ///   ÖZEL DURUM — Küçük oda yoksa büyük oda açılır:
-    ///   Eğer kalan kişi sayısına ≤ kapasiteli boş oda kalmadıysa,
-    ///   bir sonraki mevcut kapasitedeki odalar seçilebilir hale gelir
-    ///   (kullanıcının rezervasyonu tıkandığında ilerleyebilmesi için).
-    ///
-    /// ÖRNEK (1 kişi, 1K odalar dolu):
-    ///   Başlangıç → kalan=1, 1K oda boş yok → 2K odalar açılır
-    ///   2K oda seçildi → kalan=0 → tamamlandı
-    ///
-    /// REVIEWER:
-    ///   ✓ Dolu odalar (DB'de rezerve) her zaman kilitli
-    ///   ✓ Seçim iptalinde kapasite güncellenerek tekrar değerlendirme yapılır
-    ///   ✓ Eğer hiç boş oda yoksa uyarı mesajı gösterilir (Rez5OdaForm'da)
-    /// </summary>
+
     public partial class OtelOdaSecimPanel : System.Windows.Forms.UserControl
     {
-        // ── Renkler ───────────────────────────────────────────────────────────
         private static readonly Color RenkBos        = Color.FromArgb(51,  65,  85);
         private static readonly Color RenkBosAktif   = Color.FromArgb(30,  100, 160);
         private static readonly Color RenkDolu       = Color.FromArgb(80,  80,  80);
@@ -39,20 +18,16 @@ namespace oceangate_r.UI.Forms
         private static readonly Color RenkKilitli    = Color.FromArgb(25,  32,  44);  // seçilemez (taşar)
         private static readonly Color RenkKilitliTxt = Color.FromArgb(50,  58,  70);
 
-        // ── State ─────────────────────────────────────────────────────────────
         private List<OtelOda> _odalar       = new List<OtelOda>();
         private List<OtelOda> _seciliOdalar = new List<OtelOda>();
         private int           _kisiSayisi   = 1;
         private int           _seferId      = 0;
         private DateTime      _seferTarihi  = DateTime.Today;
 
-        // Tüm oda butonlarını tutuyoruz → seçim sonrası Enabled'ı güncellemek için
         private readonly List<(Button Btn, OtelOda Oda)> _tumBtnler = new List<(Button, OtelOda)>();
 
-        // ── Bilgi etiketi ─────────────────────────────────────────────────────
         private Label _lblDurum;
 
-        // ── Event ─────────────────────────────────────────────────────────────
         public event Action<List<OtelOda>> SecimDegisti;
         public List<OtelOda> SeciliOdalar => _seciliOdalar;
 
@@ -61,7 +36,6 @@ namespace oceangate_r.UI.Forms
             InitializeComponent();
         }
 
-        // ── Başlat ────────────────────────────────────────────────────────────
         public void Baslat(int kisiSayisi, int seferId, DateTime seferTarihi)
         {
             _kisiSayisi  = kisiSayisi;
@@ -74,15 +48,13 @@ namespace oceangate_r.UI.Forms
             _odalar = OtelOdaDAL.TumOdalariGetir(_seferId, _seferTarihi);
 
             BuildUI();
-            GuncelleKisitlamalar();  // ilk durumda hangi odalar seçilebilir?
+            GuncelleKisitlamalar();  
         }
 
-        // ── UI İnşası ─────────────────────────────────────────────────────────
         private void BuildUI()
         {
             int y = 8;
 
-            // Durum etiketi — kalan kişi bilgisi
             _lblDurum = new Label
             {
                 Text      = "",
@@ -95,11 +67,9 @@ namespace oceangate_r.UI.Forms
             Controls.Add(_lblDurum);
             y += 30;
 
-            // Lejant
             BuildLejant(y);
             y += 30;
 
-            // Kapasiteye göre grupla: 1K → 2K → 3K → 4K
             foreach (int kap in new[] { 1, 2, 3, 4 })
             {
                 var grup = _odalar.Where(o => o.Kapasite == kap).ToList();
@@ -144,7 +114,6 @@ namespace oceangate_r.UI.Forms
 
                     if (oda.Durum == OdaDurum.Dolu)
                     {
-                        // DB'de rezerve → kalıcı kilitli
                         btn.BackColor = RenkDolu;
                         btn.ForeColor = AppTheme.TextDim;
                         btn.Enabled   = false;
@@ -152,12 +121,10 @@ namespace oceangate_r.UI.Forms
                     }
                     else
                     {
-                        // Başlangıçta tüm boş odalar mevcut — GuncelleKisitlamalar() ayarlayacak
                         btn.BackColor = RenkBos;
                         btn.ForeColor = AppTheme.TextLight;
                         btn.FlatAppearance.MouseOverBackColor = RenkBosAktif;
 
-                        // Capture için local kopy
                         var localOda = oda;
                         var localBtn = btn;
 
@@ -165,14 +132,12 @@ namespace oceangate_r.UI.Forms
                         {
                             if (_seciliOdalar.Any(o => o.Id == localOda.Id))
                             {
-                                // Seçimi kaldır
                                 _seciliOdalar.RemoveAll(o => o.Id == localOda.Id);
                                 localBtn.BackColor = RenkBos;
                                 localBtn.FlatAppearance.MouseOverBackColor = RenkBosAktif;
                             }
                             else
                             {
-                                // Seç
                                 _seciliOdalar.Add(localOda);
                                 localBtn.BackColor = RenkSecili;
                                 localBtn.FlatAppearance.MouseOverBackColor = RenkSecili;
@@ -193,26 +158,18 @@ namespace oceangate_r.UI.Forms
             }
         }
 
-        /// <summary>
-        /// Seçim değiştiğinde hangi odaların seçilebileceğini günceller.
-        ///
-        /// KURAL: Normalde kapasite ≤ kalan kişi sayısı olan odalar seçilebilir.
-        /// ÖZEL DURUM: Eğer bu kurala uyan boş oda yoksa,
-        ///             mevcut boş odalar arasındaki en küçük kapasiteli odalar da açılır.
-        ///             Bu, kullanıcının her zaman ilerleyebilmesini sağlar.
-        /// </summary>
+    
         private void GuncelleKisitlamalar()
         {
             int toplamSecili = _seciliOdalar.Sum(o => o.Kapasite);
             int kalan        = _kisiSayisi - toplamSecili;
 
-            // ── Özel Durum Tespiti ────────────────────────────────────────────
-            // Kalan kişi için ≤ kapasiteli boş oda var mı?
+        
+            // Kalan kişi için kapasiteli <= boş oda
             bool uygunBosOdaVar = _tumBtnler.Any(x =>
-                !_seciliOdalar.Any(s => s.Id == x.Oda.Id) &&   // seçili değil
-                x.Oda.Kapasite <= kalan);                       // sığıyor
+                !_seciliOdalar.Any(s => s.Id == x.Oda.Id) &&   
+                x.Oda.Kapasite <= kalan);                       
 
-            // Eğer uygun oda yoksa, mevcut boş odaların en küçük kapasitesini bul
             int acilacakMinKap = int.MaxValue;
             if (kalan > 0 && !uygunBosOdaVar)
             {
@@ -221,7 +178,6 @@ namespace oceangate_r.UI.Forms
                         acilacakMinKap = o.Kapasite;
             }
 
-            // ── Durum etiketi ─────────────────────────────────────────────────
             if (kalan == 0)
                 _lblDurum.Text = $"✓  Tüm yolcular için oda seçildi! ({_kisiSayisi}/{_kisiSayisi} kişi)";
             else if (!uygunBosOdaVar && acilacakMinKap < int.MaxValue)
@@ -232,7 +188,6 @@ namespace oceangate_r.UI.Forms
                                 : (!uygunBosOdaVar && acilacakMinKap < int.MaxValue) ? AppTheme.Warning
                                 : AppTheme.Accent;
 
-            // ── Her butonun Enabled durumu ────────────────────────────────────
             foreach (var (btn, oda) in _tumBtnler)
             {
                 bool secilidirZaten = _seciliOdalar.Any(o => o.Id == oda.Id);
@@ -277,8 +232,7 @@ namespace oceangate_r.UI.Forms
                 }
                 else
                 {
-                    // Özel senaryo: uygun boyutta boş oda yok
-                    // Sadece en küçük mevcut kapasiteli odaları aç
+                    
                     if (oda.Kapasite == acilacakMinKap)
                     {
                         btn.Enabled   = true;
@@ -298,7 +252,6 @@ namespace oceangate_r.UI.Forms
                 }
             }
 
-            // ── Grup başlıklarını güncelle ────────────────────────────────────
             foreach (Control c in Controls)
             {
                 if (c is Label lbl && lbl.Tag is string tag && tag.StartsWith("grup"))
@@ -348,6 +301,11 @@ namespace oceangate_r.UI.Forms
                 Controls.Add(lbl);
                 ix += 138;
             }
+        }
+
+        private void _lSecili_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

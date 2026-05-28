@@ -8,11 +8,7 @@ using oceangate_r.UI;
 
 namespace oceangate_r
 {
-    /// <summary>
-    /// Rezervasyon Adım 4 - Koltuk Seçimi.
-    /// KoltukSecimPanel bu form i-ine g-m-l-d-r.
-    /// Maksimum 4 koltuk seçilebilir.
-    /// </summary>
+
     public partial class Rez4KoltukForm : Form
     {
         private readonly Form _oncekiForm;
@@ -22,7 +18,6 @@ namespace oceangate_r
             _oncekiForm = oncekiForm;
             InitializeComponent();
 
-            // Koltuk panelini DB'den dolu koltuklar- -ekerek ba-lat
             int kapasite     = RezervasyonContext.SeciliSefer?.KapasiteSayisi ?? 20;
             var doluAtamalar = KoltukDAL.DoluKoltuklariGetir(
                 RezervasyonContext.SeciliSefer.Id,
@@ -63,6 +58,11 @@ namespace oceangate_r
         {
             _oncekiForm?.Show();
             Close();
+        }
+
+        private void lblSecimBilgi_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -4,9 +4,7 @@ using oceangate_r.UI.Controls;
 
 namespace oceangate_r.UI
 {
-    /// <summary>
-    /// Tüm formlarda ortak kullanılan stil yardımcı metotları.
-    /// </summary>
+    
     public static class UIHelper
     {
         // Form genel ayarları 
@@ -18,7 +16,6 @@ namespace oceangate_r.UI
             form.Font              = AppTheme.BodyFont;
             form.FormBorderStyle   = FormBorderStyle.None;
             form.StartPosition     = FormStartPosition.CenterScreen;
-            // DoubleBuffered protected — typeof(Control) üzerinden reflection ile set et
             typeof(Control)
                 .GetProperty("DoubleBuffered",
                     System.Reflection.BindingFlags.Instance |
@@ -26,7 +23,7 @@ namespace oceangate_r.UI
                 ?.SetValue(form, true, null);
         }
 
-        // Etiket 
+       
 
         public static Label MakeLabel(string text, Font font, Color color,
             int x, int y, int w = 0, int h = 0)
@@ -57,7 +54,7 @@ namespace oceangate_r.UI
             };
         }
 
-        // Buton (OceanButton) 
+       
 
         public static OceanButton MakeButton(string text, int x, int y, int w, int h)
         {
@@ -69,7 +66,7 @@ namespace oceangate_r.UI
             };
         }
 
-        // DataGridView stilini uygula 
+         
 
         public static void StyleGrid(DataGridView dgv)
         {
@@ -103,7 +100,6 @@ namespace oceangate_r.UI
             dgv.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(36, 55, 80);
         }
 
-        // Form sürükleme (FormBorderStyle = None için) 
 
         private static Point _dragStart;
 

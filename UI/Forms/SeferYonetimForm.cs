@@ -8,7 +8,6 @@ using oceangate_r.UI.Controls;
 
 namespace oceangate_r
 {
-    /// <summary>Admin – Sefer CRUD yönetim formu.</summary>
     public partial class SeferYonetimForm : Form
     {
         private int _seciliId = -1;
@@ -156,6 +155,11 @@ namespace oceangate_r
                 SeferDAL.Sil(_seciliId);
                 YukleVeriler();
             }
+        }
+
+        private void btnKaydet_Click_1(object sender, EventArgs e)
+        {
+
         }
     }
 }

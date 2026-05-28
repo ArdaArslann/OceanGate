@@ -7,16 +7,11 @@ using oceangate_r.UI;
 
 namespace oceangate_r
 {
-    /// <summary>
-    /// Rezervasyon Adım 3 — Tarih Seçimi.
-    /// Tarih seçildikten sonra o sefer+tarih için boş oda kapasitesi kontrol edilir.
-    /// Yeterli kapasite yoksa İleri butonu kilitlenir ve kullanıcı farklı tarih seçmeye yönlendirilir.
-    /// </summary>
+  
     public partial class Rez3TarihForm : Form
     {
         private readonly Form _oncekiForm;
 
-        // Uyarı etiketi — Designer'a eklemek yerine kodda oluşturuyoruz
         private Label _lblKapasite;
 
         public Rez3TarihForm(Form oncekiForm)
@@ -24,7 +19,6 @@ namespace oceangate_r
             _oncekiForm = oncekiForm;
             InitializeComponent();
 
-            // Uyarı etiketi
             _lblKapasite = new Label
             {
                 Location  = new Point(28, 232),
@@ -40,17 +34,14 @@ namespace oceangate_r
             dateTimePicker1.Value         = RezervasyonContext.SeferTarihi;
             dateTimePicker1.ValueChanged += (s, e) => KapasitiKontrol();
 
-            KapasitiKontrol();  // ilk yüklemede de kontrol et
+            KapasitiKontrol();  
         }
 
-        // Sefer+tarih için boş oda kapasitesini kontrol eder
-        // Sefer henüz seçilmemisse kontrol geçilir (Rez2'den geçmeden direkt açılamaz)
         private void KapasitiKontrol()
         {
             var sefer = RezervasyonContext.SeciliSefer;
             if (sefer == null)
             {
-                // Sefer bilgisi yoksa kontrol yapma
                 btnIleri.Enabled      = true;
                 _lblKapasite.Text     = "";
                 return;
@@ -62,7 +53,6 @@ namespace oceangate_r
 
             if (bosKap < koltukKap)
             {
-                // Oda kapasitesi sefer kapasitesinden az — bazı yolcular oda bulamaz
                 string mesaj = bosKap == 0
                     ? "⚠️  Bu tarihte otel tamamen dolu! Lütfen farklı bir tarih seçin."
                     : $"⚠️  Bu tarihte yalnızca {bosKap} kişilik boş oda kalmıştır " +
@@ -76,7 +66,6 @@ namespace oceangate_r
             }
             else
             {
-                // Yeterli oda var
                 _lblKapasite.Text      = bosKap == koltukKap
                     ? $"✓  Bu tarihte tüm odalar boş. ({bosKap} kişilik kapasite)"
                     : $"✓  Bu tarihte {bosKap} kişilik boş oda kapasitesi var.";
@@ -88,7 +77,6 @@ namespace oceangate_r
 
         private void btnIleri_Click(object sender, EventArgs e)
         {
-            // Son kontrol — güvenlik katmanı
             var sefer = RezervasyonContext.SeciliSefer;
             if (sefer != null)
             {

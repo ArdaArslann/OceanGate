@@ -8,10 +8,7 @@ using oceangate_r.UI.Controls;
 
 namespace oceangate_r
 {
-    /// <summary>
-    /// Rezervasyon dekontu: Yazdırma desteği ile şık fatura görünümü.
-    /// ShowDialog() olarak çağrılır — uygulama kapanmaz.
-    /// </summary>
+   
     public partial class DekontForm : Form
     {
         private readonly Rezervasyon _rezervasyon;
@@ -146,6 +143,11 @@ namespace oceangate_r
         }
 
         private void _lblCheck_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void _cardTitle_Click(object sender, EventArgs e)
         {
 
         }

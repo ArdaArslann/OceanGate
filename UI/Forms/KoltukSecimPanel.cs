@@ -8,38 +8,24 @@ using oceangate_r.Entities;
 
 namespace oceangate_r.UI.Forms
 {
-    /// <summary>
-    /// Denizaltı Koltuk Seçim Paneli – 1+1 yatay düzen.
-    ///
-    /// Görsel düzen (soldan sağa):
-    ///   Üst sıra : koltuk 1, 3, 5, 7 ... (tek numaralar)
-    ///   ─── KORİDOR ───────────────────────────────────────
-    ///   Alt sıra : koltuk 2, 4, 6, 8 ... (çift numaralar)
-    ///
-    /// Koltuklar soldan sağa sütun sütun ilerler.
-    /// </summary>
+
     public partial class KoltukSecimPanel : System.Windows.Forms.UserControl
     {
-        // ── Renk Paleti ──────────────────────────────────────────────────────
         private static readonly Color RenkBos       = Color.FromArgb(51,  65,  85);
         private static readonly Color RenkDoluKadin = Color.FromArgb(236, 72,  153);
         private static readonly Color RenkDoluErkek = Color.FromArgb(59,  130, 246);
         private static readonly Color RenkSecili    = Color.FromArgb(16,  185, 129);
         private static readonly Color RenkHover     = Color.FromArgb(245, 158, 11);
 
-        // ── Durum Listesi ────────────────────────────────────────────────────
         private readonly List<Koltuk> _koltuklar   = new List<Koltuk>();
         private readonly List<Button> _koltukBtnlr = new List<Button>();
         private readonly List<int> _buOturumSecilen = new List<int>();
 
-        // ── Dışarıya bildirim ──────────────────────────────────────────
         public event Action<List<Koltuk>> SecimDegisti;
 
-        // ── Seçili koltukları dışarıya ver (UI için) ─────────────────────────
         public List<Koltuk> SeciliKoltuklar =>
             _koltuklar.Where(k => _buOturumSecilen.Contains(k.No)).ToList();
 
-        // ── KoltukAtama listesi (kayıt için) ──────────────────────────────────
         public List<KoltukAtama> SeciliAtamalar =>
             _koltuklar
                 .Where(k => _buOturumSecilen.Contains(k.No))
@@ -64,7 +50,6 @@ namespace oceangate_r.UI.Forms
         {
             BackColor  = AppTheme.BgDark;
             AutoScroll = true;
-            // DoubleBuffered'ı reflection ile aç (protected)
             typeof(Panel)
                 .GetProperty("DoubleBuffered",
                     System.Reflection.BindingFlags.Instance |
@@ -72,7 +57,6 @@ namespace oceangate_r.UI.Forms
                 ?.SetValue(this, true, null);
         }
 
-        // ── Başlat ───────────────────────────────────────────────────────────
         public void Baslat(int kapasite, List<Koltuk> mevcutDurumlar = null)
         {
             Controls.Clear();
@@ -97,7 +81,6 @@ namespace oceangate_r.UI.Forms
             BuildKoltuklar(kapasite);
         }
 
-        // ── Lejant ───────────────────────────────────────────────────────────
         private void BuildLejant()
         {
             var lblLejant = new Label
@@ -143,12 +126,7 @@ namespace oceangate_r.UI.Forms
             }
         }
 
-        // ── Koltuk Düzeni – 1+1 yatay ────────────────────────────────────────
-        //
-        //  Üst sıra : koltuk 1, 3, 5, 7 ... (indeks=0,2,4...  → No=1,3,5...)
-        //  Koridor
-        //  Alt sıra : koltuk 2, 4, 6, 8 ... (indeks=1,3,5...  → No=2,4,6...)
-        //
+ 
         private void BuildKoltuklar(int kapasite)
         {
             // Koltukları iki gruba ayır
@@ -187,7 +165,6 @@ namespace oceangate_r.UI.Forms
             }
         }
 
-        // ── Tekil Koltuk Butonu ───────────────────────────────────────────────
         private void AnaKoltukBtn(Koltuk koltuk, int x, int y)
         {
             var btn = new Button
@@ -221,18 +198,15 @@ namespace oceangate_r.UI.Forms
             Controls.Add(btn);
         }
 
-        // ── Tıklama Handler ───────────────────────────────────────────────────
         private void KoltukBtn_Click(object sender, EventArgs e)
         {
             var btn    = (Button)sender;
             var koltuk = (Koltuk)btn.Tag;
 
-            // Veritabanından gelen dolu koltuk → tıklanamaz
             if ((koltuk.Durum == KoltukDurum.DoluKadin || koltuk.Durum == KoltukDurum.DoluErkek)
                 && !_buOturumSecilen.Contains(koltuk.No))
                 return;
 
-            // Bu oturumda seçilmiş → seçimi kaldır
             if ((koltuk.Durum == KoltukDurum.DoluKadin || koltuk.Durum == KoltukDurum.DoluErkek)
                 && _buOturumSecilen.Contains(koltuk.No))
             {
@@ -260,7 +234,7 @@ namespace oceangate_r.UI.Forms
                     return;
 
                 // Cinsiyete göre gerçek durumu ata
-                koltuk.Durum  = dialog.SecilenCinsiyet.Value; // DoluKadin veya DoluErkek
+                koltuk.Durum  = dialog.SecilenCinsiyet.Value; 
                 _buOturumSecilen.Add(koltuk.No);
                 btn.BackColor = DurumRengi(koltuk.Durum);
                 btn.Cursor    = Cursors.Default;
@@ -269,7 +243,6 @@ namespace oceangate_r.UI.Forms
             SecimDegisti?.Invoke(SeciliKoltuklar);
         }
 
-        // ── Durum → Renk ──────────────────────────────────────────────────────
         public static Color DurumRengi(KoltukDurum durum)
         {
             switch (durum)
@@ -296,6 +269,11 @@ namespace oceangate_r.UI.Forms
                 btn.Cursor    = k.Durum == KoltukDurum.Bos ? Cursors.Hand : Cursors.Default;
             }
             SecimDegisti?.Invoke(SeciliKoltuklar);
+        }
+
+        private void _lHover_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

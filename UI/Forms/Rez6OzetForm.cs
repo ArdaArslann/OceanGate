@@ -9,10 +9,7 @@ using oceangate_r.UI;
 
 namespace oceangate_r
 {
-    /// <summary>
-    /// Rezervasyon Adım 6 ? ÖÖzet ve Onay.
-    /// RezervasyonContext'ten t?m verileri al?r, ÖÖzetler ve DB'ye kaydeder.
-    /// </summary>
+ 
     public partial class Rez6OzetForm : Form
     {
         private readonly Form _oncekiForm;
@@ -24,7 +21,6 @@ namespace oceangate_r
             OÖzetiDoldur();
         }
 
-        // ?? ÖÖzet Verilerini Doldur ????????????????????????????????????????????
 
         private void OÖzetiDoldur()
         {
@@ -56,20 +52,17 @@ namespace oceangate_r
             lblToplam.Text     = $"{toplam:N0} TL";
         }
 
-        // ?? Olay ??leyicileri ????????????????????????????????????????????????
 
         private void btnOnayla_Click(object sender, EventArgs e)
         {
             var sefer  = RezervasyonContext.SeciliSefer;
             double top = sefer.FiyatKisiBasiTL * RezervasyonContext.KisiSayisi;
             
-            // Bakiye kontrolü
             double guncelBakiye = KullaniciDAL.BakiyeGetir(SessionManager.AktifKullanici.Id);
             if (guncelBakiye < top)
             {
                 MessageBox.Show($"Yetersiz bakiye!\n\nToplam Tutar: {top:N0} TL\nMevcut Bakiyeniz: {guncelBakiye:N0} TL\n\nLütfen Kullanıcı Paneli'nden bakiye yükleyiniz.", "Yetersiz Bakiye", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 
-                // Formları kapat ve UserDashboard'a dön
                 var rezForms = System.Windows.Forms.Application.OpenForms.Cast<System.Windows.Forms.Form>().Where(x => x.Name.StartsWith("Rez")).ToList();
                 foreach (var f in rezForms) f.Close();
                 
@@ -78,7 +71,6 @@ namespace oceangate_r
                 return;
             }
 
-            // Bakiyeden düş
             KullaniciDAL.BakiyeDus(SessionManager.AktifKullanici.Id, top);
             SessionManager.AktifKullanici.Bakiye = KullaniciDAL.BakiyeGetir(SessionManager.AktifKullanici.Id);
 
@@ -117,17 +109,13 @@ namespace oceangate_r
             using (var dekont = new DekontForm(rez))
                 dekont.ShowDialog(this);
 
-            // Context temizle ve wizard'? kapat; geri d?n?? UserDashboard'dan gelir
             RezervasyonContext.Sifirla();
             KapatVeDashboaraDon();
         }
 
-        /// <summary>
-        /// T?m wizard zincirini (Rez1-Rez5) kapat?r ve UserDashboard'? g?sterir.
-        /// </summary>
+      
         private void KapatVeDashboaraDon()
         {
-            // Önce UserDashboard'u bul ve yenile
             UserDashboard dashboard = null;
             foreach (Form f in Application.OpenForms)
             {
@@ -138,7 +126,6 @@ namespace oceangate_r
                 }
             }
 
-            // Tüm Rez* formlarını güvenle kapat (ToList - iteration sırasında koleksiyon değişmesin)
             var rezForms = Application.OpenForms
                 .Cast<Form>()
                 .Where(f => f.Name.StartsWith("Rez"))
@@ -147,7 +134,6 @@ namespace oceangate_r
             foreach (var f in rezForms)
                 if (!f.IsDisposed) f.Close();
 
-            // Dashboard'u yenile (formlar kapatıldıktan sonra)
             if (dashboard != null && !dashboard.IsDisposed)
                 dashboard.Yenile();
         }

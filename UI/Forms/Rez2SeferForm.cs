@@ -8,9 +8,7 @@ using oceangate_r.UI;
 
 namespace oceangate_r
 {
-    /// <summary>
-    /// Rezervasyon Adým 2 – Sefer Seçimi.
-    /// </summary>
+   
     public partial class Rez2SeferForm : Form
     {
         private readonly Form _oncekiForm;
@@ -76,6 +74,11 @@ namespace oceangate_r
             e.Graphics.DrawString($"{sefer.FiyatKisiBasiTL:N0} TL / kişi", AppTheme.SubFont,
                 new SolidBrush(AppTheme.Success),
                 new System.Drawing.RectangleF(e.Bounds.Right - 220, e.Bounds.Top + 16, 200, 40));
+        }
+
+        private void lblAltBaslik_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

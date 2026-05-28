@@ -156,6 +156,7 @@ namespace oceangate_r
             this._btnBakiyeYukle.TabIndex = 2;
             this._btnBakiyeYukle.Text = "+ Bakiye Yükle";
             this._btnBakiyeYukle.UseVisualStyleBackColor = false;
+            this._btnBakiyeYukle.Click += new System.EventHandler(this._btnBakiyeYukle_Click);
             // 
             // _btnMenuAnaSayfa
             // 

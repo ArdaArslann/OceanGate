@@ -3,10 +3,7 @@ using oceangate_r.Entities;
 
 namespace oceangate_r.UI.Forms
 {
-    /// <summary>
-    /// Modal Dialog: Boş bir koltuğa tıklandığında açılan cinsiyet seçim penceresi.
-    /// ShowDialog() ile çağrılır; SecilenCinsiyet property'si sonucu döndürür.
-    /// </summary>
+   
     public partial class CinsiyetSecimForm : Form
     {
         public KoltukDurum? SecilenCinsiyet { get; private set; } = null;
@@ -32,6 +29,11 @@ namespace oceangate_r.UI.Forms
                 DialogResult    = DialogResult.Cancel;
                 Close();
             };
+        }
+
+        private void _btnTamam_Click(object sender, System.EventArgs e)
+        {
+
         }
     }
 }

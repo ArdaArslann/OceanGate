@@ -8,9 +8,7 @@ using oceangate_r.UI.Controls;
 
 namespace oceangate_r
 {
-    /// <summary>
-    /// Rezervasyon detayı ve talep oluşturma formu (modal dialog).
-    /// </summary>
+  
     public partial class RezervasyonDetayForm : Form
     {
         private readonly Rezervasyon _rez;
@@ -19,16 +17,20 @@ namespace oceangate_r
         {
             _rez = rez;
             InitializeComponent();
+            // Tarih seçici: minimum tarih bugün olsun 
+            _dtpYeni.MinDate = DateTime.Today;
+            _dtpYeni.Value   = DateTime.Today.AddDays(1);
+
             _cbTip.SelectedIndexChanged += (s, e) =>
             {
-                _dtpYeni.Visible = _cbTip.SelectedIndex == 1;
+                bool tarihSecimi = _cbTip.SelectedIndex == 1;
+                _dtpYeni.Visible     = tarihSecimi;
+                _lblYeniTarih.Visible = tarihSecimi;
             };
             _btnGonder.Click += BtnGonder_Click;
 
-            // Bilgi kartını çalışma zamanında doldur
             BuildInfoRows();
 
-            // Sadece Onaylandi ise talep bölümünü göster
             if (_rez.Durum != "Onaylandi")
             {
                 this.Size = new Size(700, 420);
@@ -108,6 +110,11 @@ namespace oceangate_r
             MessageBox.Show("Talebiniz Admin'e iletildi. Onay bekleyiniz.",
                 "Talep Gönderildi", MessageBoxButtons.OK, MessageBoxIcon.Information);
             Close();
+        }
+
+        private void _btnGonder_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

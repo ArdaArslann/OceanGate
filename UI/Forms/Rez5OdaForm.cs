@@ -7,11 +7,7 @@ using oceangate_r.UI;
 
 namespace oceangate_r
 {
-    /// <summary>
-    /// Rezervasyon Ad?m 5 ? Otel Odas? Se?imi.
-    /// OtelOdaSecimPanel bu form i?ine g?m?l?d?r.
-    /// Yaln?zca ki?i say?s?yla e?le?en kapasitedeki odalar aktiftir.
-    /// </summary>
+
     public partial class Rez5OdaForm : Form
     {
         private readonly Form _oncekiForm;
@@ -26,7 +22,7 @@ namespace oceangate_r
                 RezervasyonContext.SeciliSefer?.Id ?? 0,
                 RezervasyonContext.SeferTarihi);
 
-            // Boş oda kontrolü — sefer+tarih bazlı
+            
             int bosKap = ToplamBosKapasite();
             if (bosKap < RezervasyonContext.KisiSayisi)
             {
@@ -62,7 +58,6 @@ namespace oceangate_r
         {
             var secili = RezervasyonContext.SeciliOdalar;
 
-            // 1. Oda seçilmeli
             if (secili == null || secili.Count == 0)
             {
                 MessageBox.Show(
@@ -72,7 +67,7 @@ namespace oceangate_r
                 return;
             }
 
-            // 2. Toplam kapasite >= kişi sayısı (kesin engel)
+           
             int toplamKap  = secili.Sum(o => o.Kapasite);
             int kisiSayisi = RezervasyonContext.KisiSayisi;
 
@@ -84,7 +79,7 @@ namespace oceangate_r
                     "Lütfen toplam kapasitesi yeterli olacak şekilde daha fazla oda seçiniz.",
                     "Kapasite Yetersiz — Geçiş Engellendi",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;  // Kesinlikle geçme
+                return;  
             }
 
             var form6 = new Rez6OzetForm(this);
@@ -92,7 +87,6 @@ namespace oceangate_r
             Hide();
         }
 
-        // Sefer+tarih bazlı boş oda kapasitesini hesaplar
         private int ToplamBosKapasite()
         {
             return DAL.OtelOdaDAL.ToplamBosKapasite(
@@ -104,6 +98,11 @@ namespace oceangate_r
         {
             _oncekiForm?.Show();
             Close();
+        }
+
+        private void otelOdaSecimPanel1_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

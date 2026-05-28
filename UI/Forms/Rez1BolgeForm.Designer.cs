@@ -24,7 +24,9 @@
             this.btnIptal = new System.Windows.Forms.Button();
             this.panelBaslik.SuspendLayout();
             this.SuspendLayout();
-            
+            // 
+            // panelBaslik
+            // 
             this.panelBaslik.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
             this.panelBaslik.Controls.Add(this.lblAdim);
             this.panelBaslik.Controls.Add(this.lblBaslik);
@@ -33,7 +35,9 @@
             this.panelBaslik.Name = "panelBaslik";
             this.panelBaslik.Size = new System.Drawing.Size(1050, 80);
             this.panelBaslik.TabIndex = 0;
-           
+            // 
+            // lblAdim
+            // 
             this.lblAdim.BackColor = System.Drawing.Color.Transparent;
             this.lblAdim.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.lblAdim.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
@@ -43,7 +47,9 @@
             this.lblAdim.TabIndex = 1;
             this.lblAdim.Text = "Adım 1 / 6";
             this.lblAdim.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            
+            // 
+            // lblBaslik
+            // 
             this.lblBaslik.BackColor = System.Drawing.Color.Transparent;
             this.lblBaslik.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
             this.lblBaslik.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
@@ -52,7 +58,9 @@
             this.lblBaslik.Size = new System.Drawing.Size(400, 36);
             this.lblBaslik.TabIndex = 0;
             this.lblBaslik.Text = "Yeni Rezervasyon";
-           
+            // 
+            // lblAltBaslik
+            // 
             this.lblAltBaslik.BackColor = System.Drawing.Color.Transparent;
             this.lblAltBaslik.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.lblAltBaslik.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
@@ -61,7 +69,10 @@
             this.lblAltBaslik.Size = new System.Drawing.Size(600, 36);
             this.lblAltBaslik.TabIndex = 1;
             this.lblAltBaslik.Text = "Hangi bölgeye gitmek istersiniz?";
-            
+            this.lblAltBaslik.Click += new System.EventHandler(this.lblAltBaslik_Click);
+            // 
+            // listBoxBolgeler
+            // 
             this.listBoxBolgeler.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(41)))), ((int)(((byte)(59)))));
             this.listBoxBolgeler.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.listBoxBolgeler.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
@@ -73,7 +84,9 @@
             this.listBoxBolgeler.Size = new System.Drawing.Size(994, 384);
             this.listBoxBolgeler.TabIndex = 2;
             this.listBoxBolgeler.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.listBoxBolgeler_DrawItem);
-           
+            // 
+            // btnIleri
+            // 
             this.btnIleri.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(14)))), ((int)(((byte)(165)))), ((int)(((byte)(233)))));
             this.btnIleri.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnIleri.FlatAppearance.BorderSize = 0;
@@ -86,7 +99,10 @@
             this.btnIleri.TabIndex = 3;
             this.btnIleri.Text = "İleri →";
             this.btnIleri.UseVisualStyleBackColor = false;
-            this.btnIleri.Click += new System.EventHandler(this.btnIleri_Click); 
+            this.btnIleri.Click += new System.EventHandler(this.btnIleri_Click);
+            // 
+            // btnIptal
+            // 
             this.btnIptal.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(41)))), ((int)(((byte)(59)))));
             this.btnIptal.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnIptal.FlatAppearance.BorderSize = 0;
@@ -100,7 +116,9 @@
             this.btnIptal.Text = "✕  İptal";
             this.btnIptal.UseVisualStyleBackColor = false;
             this.btnIptal.Click += new System.EventHandler(this.btnIptal_Click);
-         
+            // 
+            // Rez1BolgeForm
+            // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
             this.ClientSize = new System.Drawing.Size(1050, 630);

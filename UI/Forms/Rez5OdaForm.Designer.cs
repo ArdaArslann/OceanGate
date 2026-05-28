@@ -24,8 +24,10 @@ namespace oceangate_r
             this.btnGeri = new System.Windows.Forms.Button();
             this.panelBaslik.SuspendLayout();
             this.SuspendLayout();
-          
-            this.panelBaslik.BackColor = System.Drawing.Color.FromArgb(15, 23, 42);
+            // 
+            // panelBaslik
+            // 
+            this.panelBaslik.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
             this.panelBaslik.Controls.Add(this.lblAdim);
             this.panelBaslik.Controls.Add(this.lblBaslik);
             this.panelBaslik.Dock = System.Windows.Forms.DockStyle.Top;
@@ -33,46 +35,58 @@ namespace oceangate_r
             this.panelBaslik.Name = "panelBaslik";
             this.panelBaslik.Size = new System.Drawing.Size(1050, 80);
             this.panelBaslik.TabIndex = 0;
-           
-            this.lblAdim.AutoSize = false;
+            // 
+            // lblAdim
+            // 
             this.lblAdim.BackColor = System.Drawing.Color.Transparent;
             this.lblAdim.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.lblAdim.ForeColor = System.Drawing.Color.FromArgb(100, 116, 139);
+            this.lblAdim.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
             this.lblAdim.Location = new System.Drawing.Point(0, 22);
             this.lblAdim.Name = "lblAdim";
             this.lblAdim.Size = new System.Drawing.Size(1030, 36);
             this.lblAdim.TabIndex = 1;
             this.lblAdim.Text = "Adım 5 / 6";
             this.lblAdim.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-          
-            this.lblBaslik.AutoSize = false;
+            // 
+            // lblBaslik
+            // 
             this.lblBaslik.BackColor = System.Drawing.Color.Transparent;
             this.lblBaslik.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
-            this.lblBaslik.ForeColor = System.Drawing.Color.FromArgb(248, 250, 252);
+            this.lblBaslik.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
             this.lblBaslik.Location = new System.Drawing.Point(28, 22);
             this.lblBaslik.Name = "lblBaslik";
             this.lblBaslik.Size = new System.Drawing.Size(400, 36);
             this.lblBaslik.TabIndex = 0;
             this.lblBaslik.Text = "Yeni Rezervasyon";
-            
-            this.lblSecimBilgi.AutoSize = false;
+            // 
+            // lblSecimBilgi
+            // 
             this.lblSecimBilgi.BackColor = System.Drawing.Color.Transparent;
             this.lblSecimBilgi.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.lblSecimBilgi.ForeColor = System.Drawing.Color.FromArgb(100, 116, 139);
+            this.lblSecimBilgi.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
             this.lblSecimBilgi.Location = new System.Drawing.Point(0, 84);
             this.lblSecimBilgi.Name = "lblSecimBilgi";
             this.lblSecimBilgi.Size = new System.Drawing.Size(1030, 24);
             this.lblSecimBilgi.TabIndex = 2;
             this.lblSecimBilgi.Text = "Kapasitenize uygun odaları seçebilirsiniz.";
             this.lblSecimBilgi.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-         
+            // 
+            // otelOdaSecimPanel1
+            // 
+            this.otelOdaSecimPanel1.AutoScroll = true;
+            this.otelOdaSecimPanel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
+            this.otelOdaSecimPanel1.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.otelOdaSecimPanel1.Location = new System.Drawing.Point(28, 112);
             this.otelOdaSecimPanel1.Name = "otelOdaSecimPanel1";
             this.otelOdaSecimPanel1.Size = new System.Drawing.Size(994, 440);
             this.otelOdaSecimPanel1.TabIndex = 3;
-         
-            this.btnIleri.BackColor = System.Drawing.Color.FromArgb(14, 165, 233);
+            this.otelOdaSecimPanel1.Load += new System.EventHandler(this.otelOdaSecimPanel1_Load);
+            // 
+            // btnIleri
+            // 
+            this.btnIleri.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(14)))), ((int)(((byte)(165)))), ((int)(((byte)(233)))));
             this.btnIleri.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnIleri.FlatAppearance.BorderSize = 0;
             this.btnIleri.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnIleri.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.btnIleri.ForeColor = System.Drawing.Color.White;
@@ -83,13 +97,15 @@ namespace oceangate_r
             this.btnIleri.Text = "Özete Git →";
             this.btnIleri.UseVisualStyleBackColor = false;
             this.btnIleri.Click += new System.EventHandler(this.btnIleri_Click);
-            this.btnIleri.FlatAppearance.BorderSize = 0;
-         
-            this.btnGeri.BackColor = System.Drawing.Color.FromArgb(30, 41, 59);
+            // 
+            // btnGeri
+            // 
+            this.btnGeri.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(41)))), ((int)(((byte)(59)))));
             this.btnGeri.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnGeri.FlatAppearance.BorderSize = 0;
             this.btnGeri.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnGeri.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.btnGeri.ForeColor = System.Drawing.Color.FromArgb(100, 116, 139);
+            this.btnGeri.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
             this.btnGeri.Location = new System.Drawing.Point(28, 570);
             this.btnGeri.Name = "btnGeri";
             this.btnGeri.Size = new System.Drawing.Size(164, 48);
@@ -97,12 +113,11 @@ namespace oceangate_r
             this.btnGeri.Text = "← Geri";
             this.btnGeri.UseVisualStyleBackColor = false;
             this.btnGeri.Click += new System.EventHandler(this.btnGeri_Click);
-            this.btnGeri.FlatAppearance.BorderSize = 0;
-            
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            // 
+            // Rez5OdaForm
+            // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.MaximizeBox = false;
-            this.BackColor = System.Drawing.Color.FromArgb(15, 23, 42);
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
             this.ClientSize = new System.Drawing.Size(1050, 640);
             this.Controls.Add(this.panelBaslik);
             this.Controls.Add(this.lblSecimBilgi);
@@ -110,7 +125,7 @@ namespace oceangate_r
             this.Controls.Add(this.btnIleri);
             this.Controls.Add(this.btnGeri);
             this.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.ForeColor = System.Drawing.Color.FromArgb(248, 250, 252);
+            this.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "Rez5OdaForm";
@@ -118,6 +133,7 @@ namespace oceangate_r
             this.Text = "OceanGate – Otel Odası Seçimi";
             this.panelBaslik.ResumeLayout(false);
             this.ResumeLayout(false);
+
         }
 
 

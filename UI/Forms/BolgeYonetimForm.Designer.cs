@@ -20,7 +20,6 @@ namespace oceangate_r
             this._btnEkle = new oceangate_r.UI.Controls.OceanButton();
             this._btnGuncelle = new oceangate_r.UI.Controls.OceanButton();
             this._btnSil = new oceangate_r.UI.Controls.OceanButton();
-
             this._dgv = new System.Windows.Forms.DataGridView();
             this._formPanel = new System.Windows.Forms.Panel();
             this._lblFormBaslik = new System.Windows.Forms.Label();
@@ -37,8 +36,9 @@ namespace oceangate_r
             this._formPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this._nudDerinlik)).BeginInit();
             this.SuspendLayout();
-        
-
+            // 
+            // lblHeader
+            // 
             this.lblHeader.BackColor = System.Drawing.Color.Transparent;
             this.lblHeader.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold);
             this.lblHeader.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
@@ -47,8 +47,9 @@ namespace oceangate_r
             this.lblHeader.Size = new System.Drawing.Size(400, 36);
             this.lblHeader.TabIndex = 0;
             this.lblHeader.Text = "🗺  Bölge Yönetimi";
-           
-
+            // 
+            // _btnEkle
+            // 
             this._btnEkle.BackColor = System.Drawing.Color.Transparent;
             this._btnEkle.CornerRadius = 6;
             this._btnEkle.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -61,8 +62,9 @@ namespace oceangate_r
             this._btnEkle.TabIndex = 1;
             this._btnEkle.Text = "+ Yeni Bölge";
             this._btnEkle.UseVisualStyleBackColor = false;
-          
-
+            // 
+            // _btnGuncelle
+            // 
             this._btnGuncelle.BackColor = System.Drawing.Color.Transparent;
             this._btnGuncelle.CornerRadius = 6;
             this._btnGuncelle.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -76,8 +78,9 @@ namespace oceangate_r
             this._btnGuncelle.TabIndex = 2;
             this._btnGuncelle.Text = "Güncelle";
             this._btnGuncelle.UseVisualStyleBackColor = false;
-           
-
+            // 
+            // _btnSil
+            // 
             this._btnSil.BackColor = System.Drawing.Color.Transparent;
             this._btnSil.CornerRadius = 6;
             this._btnSil.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -91,7 +94,10 @@ namespace oceangate_r
             this._btnSil.TabIndex = 3;
             this._btnSil.Text = "Sil";
             this._btnSil.UseVisualStyleBackColor = false;
-           
+            this._btnSil.Click += new System.EventHandler(this._btnSil_Click);
+            // 
+            // _dgv
+            // 
             this._dgv.AllowUserToAddRows = false;
             this._dgv.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
@@ -125,7 +131,9 @@ namespace oceangate_r
             this._dgv.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this._dgv.Size = new System.Drawing.Size(669, 577);
             this._dgv.TabIndex = 5;
-          
+            // 
+            // _formPanel
+            // 
             this._formPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this._formPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(41)))), ((int)(((byte)(59)))));
@@ -144,7 +152,9 @@ namespace oceangate_r
             this._formPanel.Size = new System.Drawing.Size(400, 400);
             this._formPanel.TabIndex = 6;
             this._formPanel.Visible = false;
-        
+            // 
+            // _lblFormBaslik
+            // 
             this._lblFormBaslik.BackColor = System.Drawing.Color.Transparent;
             this._lblFormBaslik.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this._lblFormBaslik.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
@@ -153,7 +163,9 @@ namespace oceangate_r
             this._lblFormBaslik.Size = new System.Drawing.Size(360, 30);
             this._lblFormBaslik.TabIndex = 0;
             this._lblFormBaslik.Text = "Yeni Bölge";
-         
+            // 
+            // _lblAd
+            // 
             this._lblAd.BackColor = System.Drawing.Color.Transparent;
             this._lblAd.Font = new System.Drawing.Font("Segoe UI", 9F);
             this._lblAd.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
@@ -162,7 +174,9 @@ namespace oceangate_r
             this._lblAd.Size = new System.Drawing.Size(160, 22);
             this._lblAd.TabIndex = 1;
             this._lblAd.Text = "Bölge Adı *";
-     
+            // 
+            // _txtAd
+            // 
             this._txtAd.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
             this._txtAd.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this._txtAd.Font = new System.Drawing.Font("Segoe UI", 9.5F);
@@ -171,7 +185,9 @@ namespace oceangate_r
             this._txtAd.Name = "_txtAd";
             this._txtAd.Size = new System.Drawing.Size(368, 29);
             this._txtAd.TabIndex = 2;
-       
+            // 
+            // _lblAc
+            // 
             this._lblAc.BackColor = System.Drawing.Color.Transparent;
             this._lblAc.Font = new System.Drawing.Font("Segoe UI", 9F);
             this._lblAc.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
@@ -180,7 +196,9 @@ namespace oceangate_r
             this._lblAc.Size = new System.Drawing.Size(160, 22);
             this._lblAc.TabIndex = 3;
             this._lblAc.Text = "Açıklama";
-           
+            // 
+            // _txtAciklama
+            // 
             this._txtAciklama.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
             this._txtAciklama.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this._txtAciklama.Font = new System.Drawing.Font("Segoe UI", 9.5F);
@@ -190,7 +208,9 @@ namespace oceangate_r
             this._txtAciklama.Name = "_txtAciklama";
             this._txtAciklama.Size = new System.Drawing.Size(368, 60);
             this._txtAciklama.TabIndex = 4;
-   
+            // 
+            // _lblDer
+            // 
             this._lblDer.BackColor = System.Drawing.Color.Transparent;
             this._lblDer.Font = new System.Drawing.Font("Segoe UI", 9F);
             this._lblDer.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
@@ -199,7 +219,9 @@ namespace oceangate_r
             this._lblDer.Size = new System.Drawing.Size(160, 22);
             this._lblDer.TabIndex = 5;
             this._lblDer.Text = "Derinlik (m)";
-       
+            // 
+            // _nudDerinlik
+            // 
             this._nudDerinlik.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
             this._nudDerinlik.DecimalPlaces = 1;
             this._nudDerinlik.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
@@ -212,7 +234,9 @@ namespace oceangate_r
             this._nudDerinlik.Name = "_nudDerinlik";
             this._nudDerinlik.Size = new System.Drawing.Size(140, 29);
             this._nudDerinlik.TabIndex = 6;
-          
+            // 
+            // _chkAktif
+            // 
             this._chkAktif.Checked = true;
             this._chkAktif.CheckState = System.Windows.Forms.CheckState.Checked;
             this._chkAktif.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
@@ -221,8 +245,9 @@ namespace oceangate_r
             this._chkAktif.Size = new System.Drawing.Size(120, 28);
             this._chkAktif.TabIndex = 7;
             this._chkAktif.Text = "Aktif";
-         
-            this.btnKaydet.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)));
+            // 
+            // btnKaydet
+            // 
             this.btnKaydet.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(185)))), ((int)(((byte)(129)))));
             this.btnKaydet.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnKaydet.FlatAppearance.BorderSize = 0;
@@ -235,8 +260,9 @@ namespace oceangate_r
             this.btnKaydet.TabIndex = 8;
             this.btnKaydet.Text = "Kaydet";
             this.btnKaydet.UseVisualStyleBackColor = false;
-         
-            this.btnIptal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)));
+            // 
+            // btnIptal
+            // 
             this.btnIptal.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
             this.btnIptal.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnIptal.FlatAppearance.BorderSize = 0;
@@ -248,7 +274,9 @@ namespace oceangate_r
             this.btnIptal.TabIndex = 9;
             this.btnIptal.Text = "İptal";
             this.btnIptal.UseVisualStyleBackColor = false;
-         
+            // 
+            // BolgeYonetimForm
+            // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
             this.ClientSize = new System.Drawing.Size(1129, 560);

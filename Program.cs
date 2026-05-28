@@ -6,13 +6,10 @@ namespace oceangate_r
 {
     internal static class Program
     {
-        /// <summary>
-        /// Uygulamanın ana giriş noktası.
-        /// </summary>
+       
         [STAThread]
         static void Main()
         {
-            // Türkçe kültür ayarları (Console.OutputEncoding WinForms'ta çalışmaz)
             System.Threading.Thread.CurrentThread.CurrentCulture =
                 new System.Globalization.CultureInfo("tr-TR");
             System.Threading.Thread.CurrentThread.CurrentUICulture =
@@ -30,7 +27,7 @@ namespace oceangate_r
             };
             Application.SetCompatibleTextRenderingDefault(false);
 
-            // Veritabanını başlat (tablolar + seed data)
+            // Veritabanını başlat (tablolar + mock data)
             try
             {
                 DatabaseManager.Initialize();

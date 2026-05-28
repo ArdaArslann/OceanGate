@@ -8,9 +8,7 @@ using oceangate_r.UI.Controls;
 
 namespace oceangate_r
 {
-    /// <summary>
-    /// Uygulama giriş noktası formu. Giriş Yap ve Kayıt Ol seçeneklerini sunar.
-    /// </summary>
+
     public partial class LoginForm : Form
     {
         private const int W = 1000, H = 620;
@@ -22,7 +20,7 @@ namespace oceangate_r
             UIHelper.EnableDrag(_leftPanel, this);
             UIHelper.EnableDrag(_rightPanel, this);
 
-            // Event bağlamaları
+          
 
             _btnToggleLogin.Click    += (s, e) => ShowPanel(true);
             _btnToggleRegister.Click += (s, e) => ShowPanel(false);
@@ -43,10 +41,6 @@ namespace oceangate_r
             }
         }
 
-        // ════════════════════════════════════════════════════════════════════
-        //  Panel Geçişi
-        // ════════════════════════════════════════════════════════════════════
-
         private void ShowPanel(bool loginMi)
         {
             _loginPanel.Visible    = loginMi;
@@ -64,10 +58,7 @@ namespace oceangate_r
                 e.Graphics.DrawLine(pen, LeftW - 1, 0, LeftW - 1, H);
         }
 
-        // ════════════════════════════════════════════════════════════════════
-        //  Olay İşleyicileri
-        // ════════════════════════════════════════════════════════════════════
-
+   
         private void BtnGiris_Click(object sender, EventArgs e)
         {
             _lblLoginError.Text      = "";
@@ -108,6 +99,11 @@ namespace oceangate_r
 
             _txtLoginUser.Text = "";
             _txtLoginPass.Text = "";
+        }
+
+        private void _btnToggleLogin_Click(object sender, EventArgs e)
+        {
+
         }
 
         private void BtnKayit_Click(object sender, EventArgs e)
